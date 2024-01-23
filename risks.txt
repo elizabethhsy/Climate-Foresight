@@ -1,0 +1,7 @@
+Identified risks
+* Setting up website/server on SRCF
+* Client said getting the C++ DCM implementation to work could be tricky
+* Unreliable internet connection such as eduroam and college wifi
+* Implementing dynamic visualisation of data (reliability of libraries, 
+etc.)
+
