@@ -1,0 +1,3 @@
+[submodule "dcEmb"]
+	path = dcEmb
+	url = https://github.com/embecosm/dcEmb
