@@ -25,7 +25,9 @@ SECRET_KEY = 'django-insecure-*u^@85-k5ia%ebc4-awfc7i&+&g-ewqh-x454grbgws^sqdeqk
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = [
+    'climateforesight.soc.srcf.net'
+]
 
 
 # Application definition
