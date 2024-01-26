@@ -1,5 +1,0 @@
-"""API URL definitions."""
-
-urlpatterns = [
-
-]
