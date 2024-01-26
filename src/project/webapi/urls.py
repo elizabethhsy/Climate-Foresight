@@ -1,0 +1,5 @@
+"""API URL definitions."""
+
+urlpatterns = [
+
+]

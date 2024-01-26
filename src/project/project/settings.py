@@ -26,6 +26,7 @@ SECRET_KEY = 'django-insecure-7#hj1u*hgnnr+qiw9g@54w(&k=l4w)ms0=xxno(9vgn()l4w_%
 DEBUG = True
 
 ALLOWED_HOSTS = [
+    '127.0.0.1',
     'climateforesight.soc.srcf.net'
 ]
 
@@ -120,10 +121,6 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
 STATIC_URL = 'static/'
-
-STATICFILES_DIRS = [ # more places to put static files
-    BASE_DIR / "static"
-]
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
