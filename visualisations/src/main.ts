@@ -1,5 +1,5 @@
-import { randomInt } from "crypto"
 import * as THREE from "three"
+import csv from './results.csv'
 
 const width = window.innerWidth
 const height = window.innerHeight
@@ -14,7 +14,7 @@ const mainCamera = new THREE.PerspectiveCamera(60, width / height, 0.1, 100)
 
 const scene = new THREE.Scene()
 
-const geometry = new THREE.SphereGeometry()
+const geometry = new THREE.SphereGeometry(2)
 const material = new THREE.MeshPhongMaterial({ color: 0xFFAD00 })
 
 const sphere = new THREE.Mesh(geometry, material)
@@ -35,22 +35,40 @@ scene.add(light2)
 
 renderer.render(scene, mainCamera)
 
-let array = [0xFF0000, 0x00FF00, 0x0000FF]
-let i = 0;
+type CO2Emission = {
+	time: number;
+	temp: number;
+}
 
-async function playAnimation() {
-	while (true) {
-		material.color.setHex(array[i]);
-		i = (i+1)%array.length;
-		renderer.render(scene, mainCamera)
-		await new Promise(f => setTimeout(f, 1000));
+function parse_csv() : CO2Emission[] {
+	console.log(csv)
+
+	const emissions: CO2Emission[] = csv.map((row : any) => {
+		const emission : CO2Emission = {
+			time : parseInt(row.Time),
+			temp : Math.max(parseFloat(row.Value), 4) // heuristic
+		}
+		return emission;
+	})
+	
+	return emissions.sort((a, b)=>(a.time - b.time));
+}
+
+document.getElementById("animation")?.addEventListener("click", visualise);
+
+async function visualise() {
+	var emissions = parse_csv();
+	var maxValue = emissions.reduce((prev, curr)=>prev.temp>curr.temp?prev:curr).temp;
+	var minValue = emissions.reduce((prev, curr)=>prev.temp<curr.temp?prev:curr).temp;
+	var diff = maxValue - minValue;
+
+	for (var i = 0; i < emissions.length; i++) {
+		var emission = emissions[i];
+		console.log(emission);
+		var proportion = (emission.temp - minValue)/diff;
+		sphere.material.color.setRGB(proportion, 0, 0);
+		sphere.scale.set(proportion, proportion, proportion);
+		renderer.render(scene, mainCamera);
+		await new Promise(f => setTimeout(f, 50));
 	}
 }
-
-document.getElementById("animation")?.addEventListener("click", playAnimation);
-
-type CO2Emission = {
-	timestamp: number;
-	emission_per_layer: number[];
-}
-
