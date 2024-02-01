@@ -134,7 +134,22 @@ STATICFILES_FINDERS = (
 
 # Pipeline Settings
 
-PIPELINE = {}
+PIPELINE = {
+    "PIPELINE_ENABLED": True,
+    "TYPESCRIPT": {
+        'stats': {
+            'source_filenames': (
+                'typescript/*.ts'
+            ),
+            'output_filename': 'ts_js/compiled.js'
+        }
+    }
+}
+PIPELINE['COMPILERS'] = (
+  'pipeline_typescript.compilers.TypescriptCompiler',
+)
+
+PIPELINE_TYPESCRIPT_BINARY = "npx tsc"
 
 
 # Default primary key field type
