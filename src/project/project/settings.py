@@ -131,6 +131,7 @@ STATICFILES_FINDERS = (
 
 COMPRESS_PRECOMPILERS = (
     ('text/typescript', 'npx tsc {infile} --outfile {outfile}'),
+    ('text/x-scss', 'django_libsass.SassCompiler'),
 )
 
 # Default primary key field type

@@ -1,0 +1,6 @@
+@import "test_variables.scss";
+
+.test-text {
+    color: $test-font-col;
+    font-family: $test-font-face;
+}

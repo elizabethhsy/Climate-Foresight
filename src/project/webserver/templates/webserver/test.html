@@ -10,9 +10,15 @@
         {% compress js %}
         <script type="text/typescript" src="{% static "typescript/test.ts" %}" />
         {% endcompress %}
+
+        {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static "stylesheets/test.scss" %}" />
+        {% endcompress %}
     </head>
 
     <body>
         <h1>Test Page</h1>
+
+        <p class="test-text" style="background-color: black;">If you can see this text, Sass is working</p>
     </body>
 </html>
