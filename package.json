@@ -1,5 +1,8 @@
 {
   "dependencies": {
+    "@material/web": "^1.2.0",
+    "@rollup/plugin-node-resolve": "^15.2.3",
+    "rollup": "^4.9.6",
     "typescript": "^4.9.5"
   }
 }
