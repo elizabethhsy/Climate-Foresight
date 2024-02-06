@@ -14,11 +14,16 @@
         {% compress css %}
         <link rel="stylesheet" type="text/x-scss" href="{% static "stylesheets/test.scss" %}" />
         {% endcompress %}
+
+        <!-- MD3 imports -->
+        <script src="{% static "material-js/bundle.js" %}"></script>
     </head>
 
     <body>
         <h1>Test Page</h1>
 
         <p class="test-text" style="background-color: black;">If you can see this text, Sass is working</p>
+
+        <md-outlined-button>MD3 Test</md-outlined-button>
     </body>
 </html>
