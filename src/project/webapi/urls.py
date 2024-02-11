@@ -1,5 +1,8 @@
 """API URL definitions."""
 
-urlpatterns = [
+from django.urls import path
+from . import views
 
+urlpatterns = [
+    path('test/', views.TestAPIView.as_view())
 ]
