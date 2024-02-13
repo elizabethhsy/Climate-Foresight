@@ -2,3 +2,8 @@
     border-radius: 6px;
     padding: 6px 12px 12px 12px;
 }
+
+.mdl-menu__item > a, button > a {
+    color: inherit;
+    text-decoration: inherit;
+}
