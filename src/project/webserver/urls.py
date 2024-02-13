@@ -20,5 +20,7 @@ urlpatterns = [
         name="logout",
     ),
 
+    path("models/list/", views.ModelList.as_view()),
+
     path('', views.HomePage.as_view())
 ]

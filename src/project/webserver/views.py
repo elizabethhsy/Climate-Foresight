@@ -43,3 +43,10 @@ class HomePage(BaseView):
 
     template = "webserver/home.html"
     title = "Home Page"
+
+
+class ModelList(BaseView):
+    """Listing of all available models."""
+
+    template = "webserver/modellist.html"
+    title = "Model Listing"
