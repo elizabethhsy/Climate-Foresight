@@ -30,3 +30,12 @@
     color: inherit;
     text-decoration: inherit;
 }
+
+.vizplaceholder {
+    max-height: 400px;
+    margin: auto;
+}
+
+*:has(> .vizplaceholder) {
+    text-align: center;
+}

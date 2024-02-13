@@ -50,3 +50,17 @@ class ModelList(BaseView):
 
     template = "webserver/modellist.html"
     title = "Model Listing"
+
+
+class ClimateModel(BaseView):
+    """Climate Model Viz."""
+
+    template = "webserver/models/climate.html"
+    title = "Visualisations - Climate Model"
+
+
+class ThreeBodyModel(BaseView):
+    """3-body Model Viz."""
+
+    template = "webserver/models/3body.html"
+    title = "Visualisations - 3-body Model"

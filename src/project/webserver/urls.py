@@ -21,6 +21,8 @@ urlpatterns = [
     ),
 
     path("models/list/", views.ModelList.as_view()),
+    path("models/builtin/climate/", views.ClimateModel.as_view()),
+    path("models/builtin/3body/", views.ThreeBodyModel.as_view()),
 
     path('', views.HomePage.as_view())
 ]
