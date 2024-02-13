@@ -1,1 +1,58 @@
 {% extends "webserver/base.html" %}
+
+{% block content %}
+
+    <div class="mdl-cell mdl-cell--12-col card mdl-shadow--4dp">
+        <h2>About the Project</h2>
+
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse non venenatis lectus. Vivamus non ante nulla. Fusce sit amet nisl urna. Nunc in dolor condimentum, rhoncus libero gravida, eleifend massa. Donec eu ipsum viverra, sodales massa quis, laoreet arcu. Nulla id ex at dui molestie scelerisque a ac urna. Sed tincidunt purus sed risus cursus iaculis. Donec porttitor convallis tortor ut sollicitudin.
+        </p>
+        <p>
+            Aliquam porta, elit sed placerat dapibus, dui orci luctus nibh, ultricies molestie metus quam in nisi. Nulla rhoncus pretium turpis, nec feugiat tortor condimentum sit amet. Vestibulum efficitur pellentesque aliquet. Ut varius, ante vitae tristique consequat, velit nunc pellentesque nunc, sit amet venenatis metus elit in sem. Praesent convallis felis sollicitudin, venenatis neque at, rhoncus ligula. Nunc neque ante, consectetur id lectus a, ornare tempor lorem. Praesent ac purus arcu. Integer erat quam, laoreet quis sagittis et, tempus vitae lacus. Vestibulum porttitor velit ut velit fringilla, nec laoreet lacus rhoncus. Fusce eleifend ullamcorper tellus sit amet blandit. Vestibulum pharetra sed arcu nec posuere. Nulla ac pellentesque lectus. Quisque aliquet turpis quis leo vulputate tempor. Ut viverra sagittis eleifend. Suspendisse placerat ac turpis sed euismod.
+        </p>
+    </div>
+
+    <div class="mdl-cell mdl-cell--12-col card mdl-shadow--4dp">
+        <h2>Example Models</h2>
+
+        <div class="model-list-container">
+            <div class="model-list-item mdl-shadow--2dp">
+                <h3>Climate Model</h3>
+                <img src="https://images.unsplash.com/photo-1637848816342-01ebaa4ff14b?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"/>
+                <br/>
+                <button class="mdl-button mdl-js-button mdl-button--primary dashboard-card-more" style="float: right;">
+                    <a href="/models/builtin/climate/">
+                        View Visualisations
+                        <span class="material-icons">arrow_forward</span>
+                    </a>
+                </button>
+            </div>
+
+            <div class="model-list-item mdl-shadow--2dp">
+                <h3>3-body Problem</h3>
+                <img src="https://images.unsplash.com/photo-1637848816342-01ebaa4ff14b?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"/>
+                <br/>
+                <button class="mdl-button mdl-js-button mdl-button--primary dashboard-card-more" style="float: right;">
+                    <a href="/models/builtin/3body/">
+                        View Visualisations
+                        <span class="material-icons">arrow_forward</span>
+                    </a>
+                </button>
+            </div>
+
+            <div class="model-list-item mdl-shadow--2dp">
+                <h3>Lorem Ipsum</h3>
+                <img src="https://images.unsplash.com/photo-1637848816342-01ebaa4ff14b?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"/>
+                <br/>
+                <button class="mdl-button mdl-js-button mdl-button--primary dashboard-card-more" style="float: right;">
+                    <a href="#">
+                        View Visualisations
+                        <span class="material-icons">arrow_forward</span>
+                    </a>
+                </button>
+            </div>
+        </div>
+    </div>
+
+{% endblock content %}
