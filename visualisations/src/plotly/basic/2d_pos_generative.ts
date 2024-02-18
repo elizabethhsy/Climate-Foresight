@@ -4,7 +4,7 @@ import data from '../../../../data/climate/ssp585/clean/pos_generative.json' ass
 // Wrangle data
 var graphData = []; // data to be graphed
 let numPoints = data["year"].length;
-let columns = Object.keys(data).filter(x => x != 'year');
+let columns = Object.keys(data).filter(x => x != 'year'); // test
 
 // for (let row = 1; row <= 3; row += 1) {
 //     for (let col = 1; col <= 4; col += 1) {
