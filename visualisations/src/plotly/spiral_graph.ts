@@ -1,19 +1,19 @@
 import Plotly from 'plotly.js-dist';
-import csv from '../../data/climate_data.csv';
+import data from '../../../data/climate/ssp585/clean/pos_generative_rand.json' assert { type: 'json' };
 
 // Wrangle data
 var graphData = []; // data to be graphed
-var numRuns = Math.max(...csv.map(d => +d.run));
+var numRuns = data["run"][data["run"].length - 1];
 
-for (let r = 1; r < numRuns; r++) {
-    let run = csv.filter(d => (d.run == r));
-    var numPoints = run.length;
+for (let r = 1; r <= numRuns; r++) {
+    let start = data["run"].indexOf(r);
+    let end = data["run"].lastIndexOf(r) + 1;
+    let numPoints = end - start;
+    let year = data["year"].slice(start, end);
+    let atmosphericTemp = data["atmospheric_temp"].slice(start, end);
+    let CH4Concentration = data["CH4_concentration"].slice(start, end);
     var t = [...Array(numPoints).keys()];
-    var theta = t.map(x => x / (numPoints - 1) * 2 * Math.PI * 12);
-    
-    let year = run.map(d => +d.year);
-    let atmosphericTemp = run.map(d => +d.atmospheric_temp);
-    let CH4Concentration = run.map(d => +d.CH4_concentration);
+    var theta = t.map(x => x / (numPoints - 1) * 2 * Math.PI * 14);
     
     let x = [];
     let y = [];
@@ -29,6 +29,7 @@ for (let r = 1; r < numRuns; r++) {
     }
     
     graphData.push({
+        name: 'run ' + r,
         type: 'scatter3d',
         mode: 'lines',
         x: x,
@@ -36,9 +37,12 @@ for (let r = 1; r < numRuns; r++) {
         z: atmosphericTemp,
         opacity: 0.7,
         line: {
-            width: 10,
+            width: 7,
             color: atmosphericTemp,
-            colorscale: 'Jet'
+            colorscale: [
+                ['0.0', 'rgb(10,50,180)'],
+                ['1.0', 'rgb(10,200,120)']
+            ]
         },
         text: labels,
         hovertemplate:
@@ -65,13 +69,15 @@ var layout = {
     scene: { // specifies 3D scene
         xaxis: {
             title: '',
-            showgrid: false,
-            zeroline: true
+            showgrid: true,
+            zeroline: false,
+            showticklabels: false
         },
         yaxis: {
             title: '',
-            showgrid: false,
-            zeroline: true
+            showgrid: true,
+            zeroline: false,
+            showticklabels: false
         },
         zaxis: {
             title: 'Temperature Anomaly (K)',

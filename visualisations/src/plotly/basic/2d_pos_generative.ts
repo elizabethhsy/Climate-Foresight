@@ -1,29 +1,29 @@
 import Plotly from 'plotly.js-dist';
-import data from '../../../data/climate/ssp585/clean/pos_generative_rand.json' assert { type: 'json' };
+import data from '../../../../data/climate/ssp585/clean/pos_generative.json' assert { type: 'json' };
 
 // Wrangle data
 var graphData = []; // data to be graphed
-var numRuns = data["run"][data["run"].length - 1];
+let numPoints = data["year"].length;
+let columns = Object.keys(data).filter(x => x != 'year');
 
-for (let r = 1; r <= numRuns; r += 1) {
-    let start = data["run"].indexOf(r); 
-    let end = data["run"].lastIndexOf(r) + 1;
-    let numPoints = end - start;
-    let year = data["year"].slice(start, end);
-    let atmosphericTemp = data["atmospheric_temp"].slice(start, end);
-    
-    graphData.push({
-        name: 'run ' + r,
-        type: 'surface',
-        x: year.map(v => [v,v]),
-        y: Array.from({length: numPoints}, () => [r - 0.375, r + 0.375]),
-        z: atmosphericTemp.map(v => [v,v]),
-        colorscale: 'Picnic',
-        showscale: false,
-        lighting: {specular: 0.3}
-    })
-}
+// for (let row = 1; row <= 3; row += 1) {
+//     for (let col = 1; col <= 4; col += 1) {
+//         let year = data["year"].slice(start, end);
+//         let atmosphericTemp = data["atmospheric_temp"].slice(start, end);
+        
+//         graphData.push({
+//             name: 'run ' + r,
+//             type: 'surface',
+//             x: year.map(v => [v,v]),
+//             y: Array.from({length: numPoints}, () => [r - 0.375, r + 0.375]),
+//             z: atmosphericTemp.map(v => [v,v]),
+//             colorscale: 'Picnic',
+//             showscale: false,
+//             lighting: {specular: 0.3}
+//         })
 
+//     }
+// }
 
 // Prepare graph inputs
 var graphDiv = document.getElementById('graph');

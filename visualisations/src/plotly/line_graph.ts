@@ -1,27 +1,32 @@
 import Plotly from 'plotly.js-dist';
-import csv from '../../data/climate_data.csv';
+import data from '../../../data/climate/ssp585/clean/pos_generative_rand.json' assert { type: 'json' };
 
 // Wrangle data
 var graphData = []; // data to be graphed
-var numRuns = Math.max(...csv.map(d => +d.run));
+var numRuns = data["run"][data["run"].length - 1];
 
-for (let r = 1; r < numRuns; r++) {
-    let run = csv.filter(d => (d.run == r));
-    let years = run.map(d => +d.year);
-    let atmosphericTemp = run.map(d => +d.atmospheric_temp);
-    let N2OAirborneEmissions = run.map(d => +d.N2O_airborne_emissions);
+for (let r = 1; r <= numRuns; r++) {
+    let start = data["run"].indexOf(r); 
+    let end = data["run"].lastIndexOf(r) + 1;
+    let year = data["year"].slice(start, end);
+    let atmosphericTemp = data["atmospheric_temp"].slice(start, end);
+    let N2OAirborneEmissions = data["N2O_airborne_emissions"].slice(start, end);
     
     graphData.push({
+        name: 'run ' + r,
         type: 'scatter3d',
         mode: 'lines',
         x: atmosphericTemp,
         y: N2OAirborneEmissions,
-        z: years,
+        z: year,
         opacity: 0.7,
         line: {
-            width: 10,
+            width: 7,
             color: atmosphericTemp,
-            colorscale: 'YlOrRd'
+            colorscale: [
+                ['0.0', 'rgb(0,90,205)'],
+                ['1.0', 'rgb(0,240,90)']
+            ]
         },
         hovertemplate:
             `<b>Run ${r}</b><br>`
