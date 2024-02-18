@@ -1,3 +1,6 @@
 [submodule "dcEmb"]
 	path = dcEmb
 	url = https://github.com/embecosm/dcEmb
+[submodule "dcEmb-examples"]
+	path = dcEmb-examples
+	url = git@github.com:JacobLiu001/dcEmb-examples.git
