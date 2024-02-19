@@ -1,6 +1,9 @@
 import Plotly from 'plotly.js-dist';
 import data from '../../../../data/climate/ssp585/clean/pos_generative.json' assert { type: 'json' };
 
+// Note: substitute the other generative data in above to create 2d graphs for them
+// e.g. true_generative.json, prior_generative.json
+
 // Wrangle data
 var graphData = []; // data to be graphed
 var annotations = [];
@@ -32,8 +35,8 @@ for (let row = 1; row <= nrows; row += 1) {
             text: column,
             xref: 'paper',
             yref: 'paper',
-            x: (col - (0.75 * (4 - col)/3 + 0.25 * (col - 1)/3)) / ncols,  // weighted average to have centered titles
-            y: 1.0 - (row - (1.0 * (6-row)/5 + 0.8 * (row-1)/5)) / nrows,
+            x: (col - (0.75 * (ncols - col)/(ncols - 1) + 0.25 * (col - 1)/(ncols - 1))) / ncols,  // weighted average to have centered titles
+            y: 1.0 - (row - (1.0 * (nrows - row)/(nrows - 1) + 0.8 * (row - 1)/(nrows - 1))) / nrows,
             yanchor: 'bottom',
             showarrow: false
         })
