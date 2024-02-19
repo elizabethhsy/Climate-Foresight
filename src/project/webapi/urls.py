@@ -4,5 +4,5 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('test/', views.TestAPIView.as_view())
+    path('climate/', views.ClimateJson.as_view())
 ]
