@@ -30,8 +30,19 @@ class ClimateJson(BaseJsonView):
         if filetype not in self.FILETYPES:
             raise Http404("Invalid file type")
         filepath = (BASE_DIR / "webapi/data/climate" / scenario / "clean" / filetype).with_suffix(".json")
-        print(filepath.resolve())
         # Maintain flexibility should this be dynamic in the future
+        with open(filepath) as f:
+            data = json.load(f)
+        return data
+
+class ThreeBodyJson(BaseJsonView):
+    XS = {"0.04"}
+    def get_data(self, request: HttpRequest) -> dict:
+        params = request.GET
+        x = params["x"]
+        if x not in self.XS:
+            raise Http404("Invalid x value")
+        filepath = (BASE_DIR / "webapi/data/3body" / f"{x}" / "deriv_generative").with_suffix(".json")
         with open(filepath) as f:
             data = json.load(f)
         return data
