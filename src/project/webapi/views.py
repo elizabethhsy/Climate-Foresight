@@ -3,6 +3,7 @@ from django.conf import settings
 from django.views import View
 from pathlib import Path
 import json
+import csv
 
 BASE_DIR = settings.BASE_DIR
 
@@ -42,7 +43,8 @@ class ThreeBodyJson(BaseJsonView):
         x = params["x"]
         if x not in self.XS:
             raise Http404("Invalid x value")
-        filepath = (BASE_DIR / "webapi/data/3body" / f"{x}" / "deriv_generative").with_suffix(".json")
-        with open(filepath) as f:
-            data = json.load(f)
+        filepath = (BASE_DIR / "webapi/data/3body" / f"{x}" / "deriv_generative").with_suffix(".csv")
+        with open(filepath, newline='') as f:
+            reader = csv.reader(f, delimiter=",")
+            data = {"raw_csv": [row for row in reader]}
         return data
