@@ -1,0 +1,53 @@
+{% extends "webserver/base.html" %}
+
+{% block content %}
+
+    <div class="mdl-cell mdl-cell--12-col card mdl-shadow--4dp">
+        <h2>Example Models</h2>
+
+        <div class="model-list-container">
+            <div class="model-list-item mdl-shadow--2dp">
+                <h3>Climate Model</h3>
+                <img src="https://images.unsplash.com/photo-1637848816342-01ebaa4ff14b?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"/>
+                <br/>
+                <button class="mdl-button mdl-js-button mdl-button--primary dashboard-card-more" style="float: right;">
+                    <a href="/models/builtin/climate/">
+                        View Visualisations
+                        <span class="material-icons">arrow_forward</span>
+                    </a>
+                </button>
+            </div>
+
+            <div class="model-list-item mdl-shadow--2dp">
+                <h3>3-body Problem</h3>
+                <img src="https://images.unsplash.com/photo-1637848816342-01ebaa4ff14b?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"/>
+                <br/>
+                <button class="mdl-button mdl-js-button mdl-button--primary dashboard-card-more" style="float: right;">
+                    <a href="/models/builtin/3body/">
+                        View Visualisations
+                        <span class="material-icons">arrow_forward</span>
+                    </a>
+                </button>
+            </div>
+
+            <div class="model-list-item mdl-shadow--2dp">
+                <h3>Lorem Ipsum</h3>
+                <img src="https://images.unsplash.com/photo-1637848816342-01ebaa4ff14b?q=80&w=2340&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"/>
+                <br/>
+                <button class="mdl-button mdl-js-button mdl-button--primary dashboard-card-more" style="float: right;">
+                    <a href="#">
+                        View Visualisations
+                        <span class="material-icons">arrow_forward</span>
+                    </a>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="mdl-cell mdl-cell--12-col card mdl-shadow--4dp">
+        <h2>My Models</h2>
+
+        <p>Please sign in to view your uploaded models.</p>
+    </div>
+
+{% endblock content %}

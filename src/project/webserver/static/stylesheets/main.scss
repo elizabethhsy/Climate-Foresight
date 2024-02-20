@@ -1,0 +1,41 @@
+.card {
+    border-radius: 6px;
+    padding: 6px 12px 12px 12px;
+}
+
+.model-list-container {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: scroll;
+    flex-direction: row;
+}
+
+.model-list-item {
+    margin: 5px 10px 5px 10px;
+    padding: 12px 5px 5px 5px;
+    border-radius: 6px;
+}
+
+.model-list-item > img {
+    max-height: 200px;
+    border-radius: 6px;
+    margin: 5px;
+}
+
+.model-list-item > h3 {
+    margin: 0;
+}
+
+.mdl-menu__item > a, button > a {
+    color: inherit;
+    text-decoration: inherit;
+}
+
+.vizplaceholder {
+    max-height: 400px;
+    margin: auto;
+}
+
+*:has(> .vizplaceholder) {
+    text-align: center;
+}
