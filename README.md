@@ -22,4 +22,4 @@ carbon-climate model within the Dynamic Causal Modeling framework.
 
 - 3body: This is expected to undergo significant changes, since the 3body team hasn't gotten back to me just yet...
     - `GET /api/3body?x=XXX`<br>
-    where `x` is the noise introduced to the default_prior_expectations. 
+    where `x` is the noise introduced to `default_prior_expectations`. 

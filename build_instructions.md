@@ -62,4 +62,4 @@ We are going to continue to not install the library. Instead, we explicitly tell
 6. Now you should have the executables `dcm_3body`, `dcm_covid`, and `dcm_weather`.
 
 There are more than one way to do this, and you can adjust this to your liking.
-This is why I have not pushed any changes to CMakeLists.txt to our repo, as things you probably be different on your system. 
+This is why I have not pushed any changes to CMakeLists.txt to our repo, as things will probably be different on your system. 
