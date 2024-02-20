@@ -63,3 +63,18 @@ We are going to continue to not install the library. Instead, we explicitly tell
 
 There are more than one way to do this, and you can adjust this to your liking.
 This is why I have not pushed any changes to CMakeLists.txt to our repo, as things will probably be different on your system. 
+
+### Usage
+
+#### Climate model
+You can run a test model with `./dcm_weather ssp585 a.txt` with the contents of `a.txt` being
+`1.876 5.154 0.6435 2.632 9.262 52.93 1.285 2.691 0.4395 28.24 8`
+to see what's going on.
+
+You can also run the `run_all_climate_scenarios.sh` shell script. This runs all available weather scenarios with the default prior expectations. It copies and sanitizes the data, and then copy it to the webapi data directory.
+
+
+#### 3body model
+Run test with `./dcm_3body 0.04`.
+
+The shell script `run_all_3body_scenarios.sh` runs only for `x=0.04` at the moment. This copies the result to the webapi data directory.
