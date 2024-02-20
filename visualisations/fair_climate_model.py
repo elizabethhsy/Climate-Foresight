@@ -60,18 +60,20 @@ f.fill_species_configs()
 fill(f.species_configs['tropospheric_adjustment'], 0, specie='CO2')
 f.run()
 
-print(np.array(f.temperature.loc[dict(layer=0, scenario='abrupt-4xCO2')])[:, 0].shape)
+# print(np.array(f.temperature.loc[dict(layer=0, scenario='abrupt-4xCO2')])[:, 0].shape)
 
-dictionary = {
-    "Time": f.timebounds,
-    "Value": np.array(f.temperature.loc[dict(layer=0, scenario='abrupt-4xCO2')])[:, 5]
-}
+print(f.emissions.shape, f.concentration.shape)
 
-results_df = pd.DataFrame(dictionary)
+# dictionary = {
+#     "Time": f.timebounds,
+#     "Value": np.array(f.temperature.loc[dict(layer=0, scenario='abrupt-4xCO2')])[:, 5]
+# }
 
-# print(float(results_df[500][0]))
+# results_df = pd.DataFrame(dictionary)
 
-results_df.to_csv("./src/results.csv", index=False)
+# # print(float(results_df[500][0]))
+
+# results_df.to_csv("./src/results.csv", index=False)
 
 # fig, ax = pl.subplots()
 # ax.plot(f.timebounds, f.temperature.loc[dict(layer=0, scenario='abrupt-4xCO2')])
