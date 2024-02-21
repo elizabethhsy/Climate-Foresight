@@ -1,4 +1,4 @@
-import { PlotlyRibbonGraph } from '../lib/ribbon_graph';
+import { PlotlyRibbonGraph } from '../templates/ribbon_graph';
 
 import data from '../../../../../../../../data/climate/ssp585/clean/pos_generative_rand.json' assert { type: 'json' };
 

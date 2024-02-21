@@ -1,4 +1,4 @@
-import { LineGraph } from "../lib/line_graph";
+import { LineGraph } from "../templates/line_graph";
 
 import data from '../../../../../../../../data/climate/ssp245/clean/pos_generative_rand.json' assert { type: 'json' };
 

@@ -1,4 +1,4 @@
-import { BarChart } from "../lib/bar_chart";
+import { BarChart } from "../templates/bar_chart";
 
 import data from '../../../../../../../../data/climate/ssp126/clean/pos_generative.json' assert { type: 'json' };
 
