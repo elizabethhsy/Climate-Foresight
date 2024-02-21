@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import data from '../../../data/climate/ssp585/clean/pos_generative.json' assert { type: 'json' };
+import data from '../../../../../../../../data/climate/ssp585/clean/pos_generative.json' assert { type: 'json' };
 
 // Data processing
 const n = 3; // No. of forcing groups

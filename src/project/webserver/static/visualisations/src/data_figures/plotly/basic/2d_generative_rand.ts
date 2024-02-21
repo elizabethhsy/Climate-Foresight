@@ -1,5 +1,5 @@
 import Plotly from 'plotly.js-dist';
-import data from '../../../../data/climate/ssp585/clean/prior_generative_rand.json' assert { type: 'json' };
+import data from '../../../../../../../../../data/climate/ssp585/clean/prior_generative_rand.json' assert { type: 'json' };
 
 // Note: substitute the other generative rand data in above to create 2d graphs for them
 // i.e. prior_generative_rand.json

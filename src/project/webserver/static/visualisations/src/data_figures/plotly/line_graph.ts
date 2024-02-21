@@ -1,26 +1,38 @@
 import Plotly from 'plotly.js-dist';
-import data from '../../../data/climate/ssp585/clean/pos_generative_rand.json' assert { type: 'json' };
+import data from '../../../../../../../../data/climate/ssp585/clean/pos_generative_rand.json' assert { type: 'json' };
 
 // Wrangle data
 var graphData = []; // data to be graphed
 var numRuns = data["run"][data["run"].length - 1];
 
-for (let r = 1; r <= numRuns; r += 1) {
+for (let r = 1; r <= numRuns; r++) {
     let start = data["run"].indexOf(r); 
     let end = data["run"].lastIndexOf(r) + 1;
-    let numPoints = end - start;
     let year = data["year"].slice(start, end);
     let atmosphericTemp = data["atmospheric_temp"].slice(start, end);
+    let N2OAirborneEmissions = data["N2O_airborne_emissions"].slice(start, end);
     
     graphData.push({
         name: 'run ' + r,
-        type: 'surface',
-        x: year.map(v => [v,v]),
-        y: Array.from({length: numPoints}, () => [r - 0.375, r + 0.375]),
-        z: atmosphericTemp.map(v => [v,v]),
-        colorscale: 'Picnic',
-        showscale: false,
-        lighting: {specular: 0.3}
+        type: 'scatter3d',
+        mode: 'lines',
+        x: atmosphericTemp,
+        y: N2OAirborneEmissions,
+        z: year,
+        opacity: 0.7,
+        line: {
+            width: 7,
+            color: atmosphericTemp,
+            colorscale: [
+                ['0.0', 'rgb(0,90,205)'],
+                ['1.0', 'rgb(0,240,90)']
+            ]
+        },
+        hovertemplate:
+            `<b>Run ${r}</b><br>`
+            + `Temperature Anomaly: %{x:.2f}<br>`
+            + `N2O Airborne Emissions: %{y:.0f}`
+            + `<extra></extra>`,
     })
 }
 
@@ -30,7 +42,7 @@ var graphDiv = document.getElementById('graph');
 
 var layout = {
     title: {
-      text: 'Atmospheric Temperature (1750-2100)',
+      text: 'Temperature Anomaly and N2O Airborne Emissions (1750-2100)',
       font: {
         family: 'Courier New, monospace',
         size: 28
@@ -38,39 +50,22 @@ var layout = {
       yref: 'paper',
       y: 0.95
     },
-    autosize: true,
     scene: { // specifies 3D scene
         xaxis: {
-            title: 'Year',
+            title: 'Temperature Anomaly (K)',
             showgrid: true,
-            zeroline: true,
-            autorange: 'reversed'  // reverse the year axis to show earlier years closer to viewer
+            zeroline: true
         },
         yaxis: {
-            title: 'Run',
-            showgrid: false,
+            title: 'N2O Airborne Emissions',
+            showgrid: true,
             zeroline: true
         },
         zaxis: {
-            title: 'Atmospheric Temperature',
+            title: 'Year',
             showgrid: true,
             zeroline: true
-        },
-        camera: {
-            center: {
-                x: 0,
-                y: 0,
-                z: 0
-            },
-            eye: {
-                x: 1.25,
-                y: 0.25,
-                z: 0
-            },
-            projection: {
-                type: 'perspective'
-            }
-        },
+        }
     },
     showlegend: true,
     legend: {
@@ -88,7 +83,7 @@ var layout = {
         b: 0,
         t: 0
     }
-};
+}
 
 var config = {
     responsive: true,       // graph size adjusts to window
@@ -97,5 +92,9 @@ var config = {
     modeBarButtonsToRemove: ['zoom3d', 'pan3d', 'orbitRotation', 'tableRotation', 'resetCameraLastSave3d']
 }
 
-// Create ribbon graph
+// Create graph
 Plotly.newPlot(graphDiv, graphData, layout, config);
+
+
+// Note: data can be retrieved via
+console.log(graphDiv.data);

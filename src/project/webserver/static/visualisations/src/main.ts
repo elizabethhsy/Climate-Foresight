@@ -1,4 +1,4 @@
-import * as THREE from "three"
+import * as THREE from "../node_modules/@types/three"
 import csv from './results.csv'
 
 const width = window.innerWidth
