@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+
+{% load compress %}
+{% load static %}
+
+<html>
+    <head>
+        <title>Climate Foresight | Test Page</title>
+
+        {% compress js %}
+        <script type="text/typescript" src="{% static "typescript/test.ts" %}" />
+        {% endcompress %}
+
+        <!-- MDL imports -->
+        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.teal-light_blue.min.css">
+        <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+
+        {% compress css %}
+        <link rel="stylesheet" type="text/x-scss" href="{% static "stylesheets/test.scss" %}" />
+        {% endcompress %}
+    </head>
+
+    <body>
+        <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+            <header class="mdl-layout__header">
+                <div class="mdl-layout__header-row">
+                    <!-- Title -->
+                    <span class="mdl-layout-title">Page Title Here</span>
+                    <!-- Add spacer, to align navigation to the right -->
+                    <div class="mdl-layout-spacer"></div>
+                    <!-- Navigation. We hide it in small screens. -->
+                    <nav class="mdl-navigation mdl-layout--large-screen-only">
+                        <a class="mdl-navigation__link" href="">Link</a>
+                        <a class="mdl-navigation__link" href="">Link</a>
+                        <a class="mdl-navigation__link" href="">Link</a>
+                        <a class="mdl-navigation__link" href="">Link</a>
+                    </nav>
+                </div>
+            </header>
+            <div class="mdl-layout__drawer">
+                <span class="mdl-layout-title">Title</span>
+                <nav class="mdl-navigation">
+                    <a class="mdl-navigation__link" href="">Link</a>
+                    <a class="mdl-navigation__link" href="">Link</a>
+                    <a class="mdl-navigation__link" href="">Link</a>
+                    <a class="mdl-navigation__link" href="">Link</a>
+                </nav>
+            </div>
+            <main class="mdl-layout__content">
+                <div class="page-content flex-container mdl-grid">
+                    <div class="mdl-cell mdl-cell--12-col card mdl-shadow--4dp">
+                        <h1>Heading Card</h1>
+
+                        <p class="test-text" style="background-color: black;">If you can see this text, Sass is working</p>
+                    </div>
+
+                    <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp">
+                        <h3>2 wide cell</h3>
+                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam sed sollicitudin diam. Fusce sed sem vitae ligula volutpat tristique at at ante. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Curabitur et eros placerat, varius metus eu, vulputate felis. Mauris elit odio, luctus in turpis et, imperdiet blandit enim. Sed ut tempor erat, non porta metus. Praesent lobortis malesuada sem a volutpat. Morbi id feugiat sem. In vehicula odio quis maximus elementum. Vestibulum elementum lobortis urna non commodo. Etiam a blandit urna, eu vehicula metus. Duis lobortis ultrices ipsum vel facilisis. Quisque sodales tellus leo, sit amet finibus sem aliquet vel. Suspendisse eget vestibulum magna. </p>
+                    </div>
+
+                    <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp">
+                        <h3>2 wide cell</h3>
+                        <p>Aenean finibus consequat leo, in auctor elit. Ut rutrum porta diam, eget rhoncus tellus dictum non. Etiam convallis lobortis interdum. Aenean libero neque, interdum cursus quam in, hendrerit consectetur elit. Etiam lacus est, dapibus ut commodo eget, dictum consequat orci. Cras sagittis eu diam ac sagittis. Quisque luctus ligula turpis, vel convallis urna suscipit quis. Pellentesque malesuada id turpis at efficitur. Sed tristique faucibus molestie. Mauris nec rhoncus ex, a bibendum neque. Mauris posuere ante eu sapien mollis dignissim. Vivamus sed diam et ipsum consectetur aliquet nec nec mi. Curabitur gravida eget velit a faucibus. Nam dignissim bibendum dapibus. Vestibulum a viverra enim. Vestibulum ligula arcu, sagittis in tincidunt sed, feugiat vitae sapien.</p>
+                    </div>
+
+                    <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp">
+                        <h3>2 wide cell</h3>
+                        <p>Integer sagittis erat vehicula, sodales magna quis, eleifend dolor. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Quisque accumsan varius blandit. Cras pellentesque sapien erat, vitae feugiat nibh luctus eget. Donec vitae sem in metus tincidunt sollicitudin. Sed posuere magna a commodo hendrerit. Nam pharetra tincidunt mi, sit amet interdum dui iaculis at. Nunc id libero lectus. Integer tempus lectus libero, non pulvinar erat lobortis nec. Curabitur volutpat, eros vel malesuada ultrices, sem lacus vehicula turpis, in euismod lorem ex nec tortor. Nunc eu arcu sed ipsum suscipit consequat ac sed risus. Curabitur quis velit quis turpis rutrum facilisis. Proin nec porta erat. </p>
+                    </div>
+
+                    <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp">
+                        <h3>2 wide cell</h3>
+                        <p>Phasellus at neque urna. Vestibulum lorem nunc, pharetra in pellentesque a, ullamcorper eu dolor. Duis a dolor nec eros efficitur aliquam. Aliquam gravida nibh nec mauris maximus sollicitudin. Vestibulum bibendum ornare est, tempus blandit nunc scelerisque sit amet. Nulla id magna sit amet est tincidunt consectetur id ut lacus. Vivamus ultricies neque at mollis egestas. Ut vestibulum maximus dui, at tincidunt tortor sollicitudin ut. Nam sodales ultricies arcu, pulvinar laoreet ante facilisis eget. Aenean sed mauris eu leo venenatis consectetur in at ante. Fusce sed nibh vitae metus blandit tincidunt at non odio. </p>
+                    </div>
+
+                    <div class="mdl-cell mdl-cell--4-col card mdl-shadow--4dp">
+                        <h3>4 wide cell</h3>
+                        <p>Morbi pulvinar consequat urna a bibendum. Praesent varius ligula at porttitor semper. Nam in nisi eu enim ornare convallis. Maecenas consequat leo vel augue congue, sed efficitur ante lobortis. Duis finibus magna neque. Duis orci neque, tristique vitae accumsan et, semper pretium magna. Duis commodo, lectus eu pellentesque tincidunt, ex ex placerat nisi, id porttitor turpis sapien nec purus. Etiam volutpat finibus aliquam. </p>
+                    </div>
+
+                    <div class="mdl-cell mdl-cell--4-col card mdl-shadow--4dp">
+                        <h3>4 wide cell</h3>
+                        <p>Etiam mauris quam, pulvinar id arcu sed, accumsan lacinia orci. Aliquam consequat leo interdum blandit euismod. In ut aliquam lacus, a convallis augue. Etiam iaculis libero risus, eget semper arcu porta quis. Etiam imperdiet, augue ut imperdiet lobortis, enim velit dignissim nulla, eu commodo velit elit in ligula. Quisque sollicitudin lacus elementum purus maximus dapibus. Maecenas aliquam neque ac libero semper, quis blandit lorem finibus. Aliquam accumsan elementum tincidunt. Pellentesque eu felis feugiat, convallis dolor a, suscipit magna. Nullam rhoncus, orci a lobortis varius, ante risus cursus turpis, sit amet varius ex turpis eu erat. Donec quis porttitor tortor. Donec viverra dolor eu sem consequat, at posuere turpis ornare. Aenean vel pellentesque arcu. Etiam viverra ipsum at augue pellentesque convallis. Sed laoreet justo et eros tincidunt dignissim ac a purus. </p>
+                    </div>
+
+                    <div class="mdl-cell mdl-cell--8-col card mdl-shadow--4dp">
+                        <h3>8 wide cell</h3>
+                        <p>Fusce at eros quis elit ultrices venenatis at quis eros. Vestibulum pulvinar consequat nunc, ut malesuada dolor pulvinar id. Sed posuere tortor non rutrum tincidunt. Pellentesque in turpis nulla. In tortor lorem, lobortis in accumsan ut, rutrum ornare leo. Vivamus luctus nulla nibh, ut hendrerit purus maximus vitae. Suspendisse potenti. Suspendisse condimentum enim sit amet consectetur tristique. Vivamus mollis volutpat venenatis. Nullam eu lectus in tellus tincidunt varius. Suspendisse sodales maximus dolor sed malesuada. Mauris mattis hendrerit magna non ultricies. Duis neque leo, congue ac egestas a, gravida eget lectus. </p>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </body>
+</html>
