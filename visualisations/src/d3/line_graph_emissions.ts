@@ -9,9 +9,9 @@ const species = ["CO2", "CH4", "N2O"];
 // Convert to d3 preferred format (array of objects)
 const emissions = data["year"].map((year, i) => ({
     year: year,
-    CO2: data["CO2_emissions"][i],
-    CH4: data["CH4_emissions"][i],
-    N2O: data["N2O_emissions"][i],
+    CO2: data["CO2_forcing"][i],
+    CH4: data["CH4_forcing"][i],
+    N2O: data["N2O_forcing"][i],
     run: data["run"][i]
 }));
 
@@ -36,7 +36,7 @@ const xAxis = d3.axisBottom(x).tickValues(x.domain().filter((d, i) => i % 20 ===
 
 // y-scale to map emissions values
 const y = d3.scaleLinear()
-    .domain([0, d3.max(emissions, d => Math.max(d.CO2, d.CH4, d.N2O))])
+    .domain([0, d3.max(emissions, d => Math.max(d.CO2, d.N2O))])
     .nice()
     .range([height - margin.bottom, margin.top]);
 
@@ -61,7 +61,7 @@ species.forEach((specie, i) => {
         .x(d => x(d.year))
         .y(d => y(d[specie]));
 
-    for (let run = 1; run <= numRuns; run++) {
+    for (let run = 1; run <= 50; run++) {
         let start = data["run"].indexOf(run); 
         let end = data["run"].lastIndexOf(run) + 1;
         let yz = emissions.slice(start, end);

@@ -55,22 +55,7 @@ var layout = {
             title: 'Atmospheric Temperature',
             showgrid: true,
             zeroline: true
-        },
-        camera: {
-            center: {
-                x: 0,
-                y: 0,
-                z: 0
-            },
-            eye: {
-                x: 1.25,
-                y: 0.25,
-                z: 0
-            },
-            projection: {
-                type: 'perspective'
-            }
-        },
+        }
     },
     showlegend: true,
     legend: {

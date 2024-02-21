@@ -67,6 +67,7 @@ JS Visualization Libraries
 - ShaderGraph
     - library for linking together GLSL snippets into stand-alone shaders
 
+
 ## Dependencies
 
 - The SRCF only runs `python3.8`, so if possible make your venv use that version of Python as well.
@@ -80,3 +81,22 @@ JS Visualization Libraries
 - 3body: This is expected to undergo significant changes, since the 3body team hasn't gotten back to me just yet...
     - `GET /api/3body?x=XXX`<br>
     where `x` is the noise introduced to `default_prior_expectations`. 
+
+
+### BAS Notes
+
+- fill graphs, bar code
+- stack graphs with plots (lower one has global temp, higher one CO2 emissions)
+    - square (top half and bottom half) with disconnected y axes on each side, two graphs but different scales, shows relationship between temp and CO2
+    - stack a bunch of graphs with alternating titles, show similarities
+- graph with all the scenarios, each different color with probability distribution
+- add a probability density graph that appears when you hover over a bar (zoomed in), grey out everythin to the right
+- flying carpet diagram
+- different scenarios on same graph
+- perhaps only include the top 5 representative traces, maybe include 95% confidence etc., include low-likelihood high-risk scenario as thickened bands
+- carbon brief
+- animate the line graphs, fill in as time progress, maybe multiple scenarios next to each other
+    - have drop down where user can select scenario and have it reveal itself
+- zoom back and forth to show different scenarios
+- don't put too much on one graph
+
