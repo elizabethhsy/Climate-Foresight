@@ -29,34 +29,66 @@ setup_config();
         </p>
     </div>
 
-    <div class="mdl-cell mdl-cell--4-col card mdl-shadow--4dp">
-        <p>Viz Placeholder</p>
-        <img src="https://images.twinkl.co.uk/tw1n/image/private/t_630/u/ux/graph-wiki_ver_1.png" class="vizplaceholder"/>
-    </div>
+    <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
 
-    <div class="mdl-cell mdl-cell--6-col card mdl-shadow--4dp">
-        <p>Viz Placeholder</p>
-        <img src="https://images.twinkl.co.uk/tw1n/image/private/t_630/u/ux/graph-wiki_ver_1.png" class="vizplaceholder"/>
-    </div>
+        <div class="mdl-tabs__tab-bar">
+            <a href="#graph1-panel" class="mdl-tabs__tab is-active">Graph 1</a>
+            <a href="#graph2-panel" class="mdl-tabs__tab">Graph 2</a>
+            <a href="#graph3-panel" class="mdl-tabs__tab">Graph 3</a>
+        </div>
 
-    <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp" id="config-0-parent">
-        <h4>Options</h4>
-        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onclick="test();" id="config-0-test">Test</button>
-    </div>
+        <div class="mdl-tabs__panel is-active" id="graph1-panel">
+            <div class="flex-container mdl-grid">
 
-    <div class="mdl-cell mdl-cell--4-col card mdl-shadow--4dp">
-        <p>Viz Placeholder</p>
-        <img src="https://images.twinkl.co.uk/tw1n/image/private/t_630/u/ux/graph-wiki_ver_1.png" class="vizplaceholder"/>
-    </div>
+                <div class="mdl-cell mdl-cell--4-col card mdl-shadow--4dp">
+                    <p>Viz Placeholder</p>
+                    <img src="https://images.twinkl.co.uk/tw1n/image/private/t_630/u/ux/graph-wiki_ver_1.png" class="vizplaceholder"/>
+                </div>
 
-    <div class="mdl-cell mdl-cell--4-col card mdl-shadow--4dp">
-        <p>Viz Placeholder</p>
-        <img src="https://images.twinkl.co.uk/tw1n/image/private/t_630/u/ux/graph-wiki_ver_1.png" class="vizplaceholder"/>
-    </div>
+                <div class="mdl-cell mdl-cell--6-col card mdl-shadow--4dp">
+                    <p>Viz Placeholder</p>
+                    <img src="https://images.twinkl.co.uk/tw1n/image/private/t_630/u/ux/graph-wiki_ver_1.png" class="vizplaceholder"/>
+                </div>
 
-    <div class="mdl-cell mdl-cell--4-col card mdl-shadow--4dp">
-        <p>Viz Placeholder</p>
-        <img src="https://images.twinkl.co.uk/tw1n/image/private/t_630/u/ux/graph-wiki_ver_1.png" class="vizplaceholder"/>
+                <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp" id="config-0-parent">
+                    <h4>Options</h4>
+                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onclick="test();" id="config-0-test">Test</button>
+                </div>
+
+                <div class="mdl-cell mdl-cell--4-col card mdl-shadow--4dp">
+                    <p>Viz Placeholder</p>
+                    <img src="https://images.twinkl.co.uk/tw1n/image/private/t_630/u/ux/graph-wiki_ver_1.png" class="vizplaceholder"/>
+                </div>
+
+                <div class="mdl-cell mdl-cell--4-col card mdl-shadow--4dp">
+                    <p>Viz Placeholder</p>
+                    <img src="https://images.twinkl.co.uk/tw1n/image/private/t_630/u/ux/graph-wiki_ver_1.png" class="vizplaceholder"/>
+                </div>
+
+                <div class="mdl-cell mdl-cell--4-col card mdl-shadow--4dp">
+                    <p>Viz Placeholder</p>
+                    <img src="https://images.twinkl.co.uk/tw1n/image/private/t_630/u/ux/graph-wiki_ver_1.png" class="vizplaceholder"/>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="mdl-tabs__panel" id="graph2-panel">
+            <div class="flex-container mdl-grid">
+
+                <!-- Content -->
+
+            </div>
+        </div>
+
+        <div class="mdl-tabs__panel" id="graph3-panel">
+            <div class="flex-container mdl-grid">
+
+                <!-- Content -->
+
+            </div>
+        </div>
+
     </div>
 
 {% endblock content %}
