@@ -1,5 +1,5 @@
 import Plotly from 'plotly.js-dist';
-import data from '../../../../../../../../data/climate/ssp585/clean/prior_generative_rand.json' assert { type: 'json' };
+import data from '../../../../../../../../data/climate/ssp534-over/clean/pos_generative_rand.json' assert { type: 'json' };
 
 // Note: substitute the other generative rand data in above to create 2d graphs for them
 // i.e. prior_generative_rand.json
@@ -58,7 +58,7 @@ for (let r = 1; r <= numRuns; r += 1) {
 var graphDiv = document.getElementById('graph');
 
 var layout = {
-    title: 'Prior Generative Random Data',
+    title: 'Posterior Generative Random Data (SSP534-over)',
     grid: {rows: nrows, columns: ncols, pattern: 'independent'},
     annotations: annotations,
     autosize: true,
