@@ -1,4 +1,20 @@
 {% extends "webserver/base.html" %}
+{% load compress %}
+{% load static %}
+
+{% block head %}
+
+    {% compress js %}
+    <script>var exports = {};</script>
+    <script type="text/typescript" src="{% static "typescript/visualisations/climate.ts" %}" />
+    <script type="text/typescript" src="{% static "typescript/configs.ts" %}"/>
+    {% endcompress %}
+
+{% endblock head %}
+
+{% block onload %}
+setup_config();
+{% endblock onload %}
 
 {% block content %}
 
@@ -18,9 +34,14 @@
         <img src="https://images.twinkl.co.uk/tw1n/image/private/t_630/u/ux/graph-wiki_ver_1.png" class="vizplaceholder"/>
     </div>
 
-    <div class="mdl-cell mdl-cell--8-col card mdl-shadow--4dp">
+    <div class="mdl-cell mdl-cell--6-col card mdl-shadow--4dp">
         <p>Viz Placeholder</p>
         <img src="https://images.twinkl.co.uk/tw1n/image/private/t_630/u/ux/graph-wiki_ver_1.png" class="vizplaceholder"/>
+    </div>
+
+    <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp" id="config-0-parent">
+        <h4>Options</h4>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onclick="test();" id="config-0-test">Test</button>
     </div>
 
     <div class="mdl-cell mdl-cell--4-col card mdl-shadow--4dp">
