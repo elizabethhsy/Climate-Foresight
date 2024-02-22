@@ -130,7 +130,7 @@ STATICFILES_FINDERS = (
 )
 
 COMPRESS_PRECOMPILERS = (
-    ('text/typescript', 'npx tsc {infile} --outfile {outfile}'),
+    ('text/typescript', 'tsc-custom {infile} {outfile}'),
     ('text/x-scss', 'django_libsass.SassCompiler'),
 )
 
