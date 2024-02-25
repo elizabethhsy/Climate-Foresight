@@ -1,17 +1,39 @@
 import * as d3 from "d3";
 import { Figure } from './figure';
 
+type MetricGraph = {
+    metric: string,
+    delaunay: any,
+    points: any,
+    groups: any,
+    x: any,
+    y: any,
+    run: any
+}
+
+// Declare the chart dimensions and margins.
+const width = 1200;
+const height = 800;
+const margin = {
+    top: 20,
+    right: 20,
+    bottom: 50,
+    left: 40
+}
+const tooltipRadius = 100;
+
 export class OverlayedLineGraph extends Figure {
-    private graphData: any[] = [];
     private layout: any;
     private config: any;
     private metrics = ["emissions", "airborne_emissions", "concentration", "forcing"]
+    private metricGraphs: MetricGraph[] = [];
 
     constructor(DOMElement: HTMLElement) {
         super(DOMElement);
     }
 
     public prepareData(data: any): void {
+        const start = Date.now();
         const sp = "CO2";
         const specie_data = data["year"].map((year, i) => ({
             year: year,
@@ -22,59 +44,88 @@ export class OverlayedLineGraph extends Figure {
             run: data["run"][i]
         }))
 
-        this.graphData = specie_data;
+        for (var metric of this.metrics) {
+            let graph:MetricGraph = {
+                metric: metric,
+                delaunay: null,
+                points: null,
+                groups: null,
+                x: specie_data.map((d)=>d.year),
+                y: specie_data.map((d)=>this.getMetric(d, metric)),
+                run: specie_data.map((d)=>d.run)
+            }
+            this.metricGraphs.push(graph);
+        }
+
+        const end = Date.now();
+        console.log(end-start);
     }
 
     public create(): void {
+        const start = Date.now();
         const sp = "CO2";
 
-        for (var metric of this.metrics) {
-            // Declare the chart dimensions and margins.
-            const width = 928;
-            const height = 500;
-            const marginTop = 20;
-            const marginRight = 30;
-            const marginBottom = 30;
-            const marginLeft = 40;
+        // Create container for the screen
+        const graphContainer = d3.select("#graph").style("display", "flex").style("flex-wrap", "wrap");
+
+        this.metricGraphs.forEach(graph => {
+            console.log(graph);
+            // Generate unique IDs for each graph
+            const chartId = `chart-${graph.metric}`;
+            // Create container for each graph
+            const chartContainer = graphContainer.append("div").attr("id", chartId).style("position", "relative").style("width", "50%").style("height", "50%");
+
+            // Append the SVG to the chart container
+            const svg = chartContainer.append("svg")
+                .attr("width", width)
+                .attr("height", height)
+                .attr("style", "max-width: 100%; height: auto; overflow: visible; font: 10px sans-serif;")
+            
+            const svgRect = svg.node().getBoundingClientRect();
+            console.log(svgRect);
 
             // Create the positional scales.
             const x = d3.scaleUtc()
-            .domain(d3.extent(this.graphData, d => d.year))
-            .range([marginLeft, width - marginRight]);
+            .domain(d3.extent(graph.x))
+            .range([margin.left, svgRect.width - margin.right]);
 
             const y = d3.scaleLinear()
-            .domain([0, d3.max(this.graphData, d => this.getMetric(d, metric))]).nice()
-            .range([height - marginBottom, marginTop]);
+            .domain(d3.extent(graph.y)).nice()
+            .range([svgRect.height - margin.bottom, margin.top]);
 
-            // Create the SVG container.
-            const svg = d3.select("#graph").append("svg")
-                .attr("width", width)
-                .attr("height", height)
-                .attr("viewBox", [0, 0, width, height])
-                .attr("style", "max-width: 100%; height: auto; overflow: visible; font: 10px sans-serif;");
+            const scaled_x = graph.x.map(v => x(v));
+            const scaled_y = graph.y.map(v => y(v));
+
+            const points = scaled_x.map(function(e, i) {
+                return [e, scaled_y[i], graph.run[i]];
+            });
+
+            const groups = d3.rollup(points, v => Object.assign(v, {z: v[0][2]}), d => d[2]);
+            const delaunay = d3.Delaunay.from(points);
+
+            graph.points = points;
+            graph.groups = groups;
+            graph.delaunay = delaunay;
 
             // Add the horizontal axis.
             svg.append("g")
-                .attr("transform", `translate(0,${height - marginBottom})`)
-                .call(d3.axisBottom(x).ticks(width / 80).tickSizeOuter(0));
+                .attr("transform", `translate(0,${svgRect.height - margin.bottom})`)
+                .call(d3.axisBottom(x).tickSizeOuter(0));
 
             // Add the vertical axis.
             svg.append("g")
-                .attr("transform", `translate(${marginLeft},0)`)
+                .attr("transform", `translate(${margin.left},0)`)
                 .call(d3.axisLeft(y))
                 .call(g => g.select(".domain").remove())
                 .call(g => g.append("text")
-                    .attr("x", -marginLeft)
+                    .attr("x", 0)
                     .attr("y", 10)
                     .attr("fill", "currentColor")
                     .attr("text-anchor", "start")
-                    .text(sp.concat(" " + metric)));
-
-            const points = this.graphData.map((d) => [x(d.year), y(this.getMetric(d, metric)), d.run]);
-            const groups = d3.rollup(points, v => Object.assign(v, {z: v[0][2]}), d => d[2]);
+                    .text(sp.concat(" " + graph.metric)));
 
             const line = d3.line();
-            svg.append("g")
+            const path = svg.append("g")
                 .attr("fill", "none")
                 .attr("stroke", "steelblue")
                 .attr("stroke-width", 1.5)
@@ -82,11 +133,38 @@ export class OverlayedLineGraph extends Figure {
                 .attr("stroke-linecap", "round")
                 .attr("stroke-opacity", 0.1)
                 .selectAll("path")
-                .data(groups.values())
+                .data(graph.groups.values())
                 .join("path")
                 .style("mix-blend-mode", "multiply")
                 .attr("d", line);
-        }
+            
+            const tooltip = svg.append("g")
+                .attr("display", "none");
+
+            tooltip.append("circle")
+                .attr("r", tooltipRadius)
+                .attr("fill", "rgba(255, 255, 255, 0.8)")
+                .attr("stroke", "black");
+
+            tooltip.append("text")
+                .attr("text-anchor", "middle")
+                .attr("y", -8);
+            
+            svg
+                .on("click", (event) => {
+                    console.log(graph.metric);
+                    let [mx, my] = d3.pointer(event);
+                    console.log("%d, %d", mx, my);
+                    const i = graph.delaunay.find(mx, my);
+                    console.log(i);
+                    const [x, y, k] = points[i]
+                    tooltip.attr("transform", `translate(${x},${y})`);
+                    tooltip.attr("display", null);
+                })
+        })
+
+        const end = Date.now();
+        console.log(end-start);
     }
 
     private getMetric(d:any, metric:string):any {
