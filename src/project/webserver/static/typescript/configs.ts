@@ -7,6 +7,8 @@ class Config extends Object {
     number: number;
     count: number = 0;
 
+    private listeners = [];
+
     constructor(number: number) {
         super()
         this.rootdiv = document.createElement("div");
@@ -14,7 +16,7 @@ class Config extends Object {
         this.number = number;
     }
 
-    add_value(name: string, label: string, type: string, params?: Array<string>): void {
+    add_value(name: string, label: string, type: string, params?: Array<string>, defaultValue?: string): void {
         const this_ = this;
         const id = "config-" + this.number + "-" + this.count;
         this.count++;
@@ -62,9 +64,17 @@ class Config extends Object {
                     containers[containers.length - 1].htmlFor = "radio-" + name + "-option-" + i;
 
                     let inputEl = document.createElement("input");
-                    inputEl.type = "radio"; inputEl.id = "radio-" + name + "-option-" + i;
-                    inputEl.classList.add("mdl-radio__button"); inputEl.name = "radio-" + name;
+                    inputEl.type = "radio";
+                    inputEl.id = "radio-" + name + "-option-" + i;
+                    inputEl.classList.add("mdl-radio__button");
+                    inputEl.name = "radio-" + name;
                     inputEl.value = i.toString();
+                    
+                    if (params[i] === defaultValue) {
+                        inputEl.checked = true;
+                        this.values[name] = defaultValue;
+                    }
+
                     containers[containers.length - 1].appendChild(inputEl);
 
                     let labelEl = document.createElement("span");
@@ -77,6 +87,7 @@ class Config extends Object {
                     inputEl.onclick = function() {
                         const radioButton = document.querySelector('input[name="radio-' + name + '"]:checked'); // find the checked radio button
                         this_.values[name] = radioButton?.parentElement?.childNodes[1].innerHTML; // return label for that button
+                        this_.notify();
                     }
                 }
                 break;
@@ -88,4 +99,15 @@ class Config extends Object {
     instantiate(parent: HTMLElement): void {
         parent.appendChild(this.rootdiv);
     }
+
+    // Allow other classes to subscribe to config changes
+    subscribe(listener: () => void) {
+        this.listeners.push(listener);
+    }
+
+    // Notify all subscribers of a change
+    notify() {
+        this.listeners.forEach(listener => listener());
+    }
+    
 }

@@ -4,6 +4,7 @@ abstract class Figure {
     constructor(DOMElement: HTMLElement, config) {
         this.DOMElement = DOMElement;
         this.config = config;
+        this.config.subscribe(this.update.bind(this));
 
         if (!DOMElement) {
             console.error(`${DOMElement} not found`)
@@ -11,6 +12,7 @@ abstract class Figure {
     }
 
     abstract prepareData(data: any): void;
+    abstract update(): void;
     abstract render(): void;
 }
 

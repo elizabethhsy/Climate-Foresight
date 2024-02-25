@@ -4,8 +4,9 @@
 
 // TODO: move stuff from create to prepareData
 class BarChart extends Figure {
-    private data: any[] = [];
-    private metric: string = "forcing";  // options: forcing, emissions, airborne_emissions, concentration
+    private scenario: string;
+    private metric: string;  // options: forcing, emissions, airborne_emissions, concentration
+    private data: Object;
     
     static SPECIES = ["CO2", "CH4", "N2O"];
     static colorMap = { // TODO: move to parent class?
@@ -16,10 +17,248 @@ class BarChart extends Figure {
 
     constructor(DOMElement: HTMLElement, config) {
         super(DOMElement, config);
+
+        // Default options
+        this.data = {};
+        this.scenario = this.config.values["radioScenario"];
+        this.metric = this.config.values["radioMetric"].replace(' ', '_');
+        console.log(this.scenario);
+    }
+
+    public async update() {
+        console.log("Updating bar chart");
+
+        if (this.scenario === this.config.values["radioScenario"].replace(' ', '_') && this.metric === this.config.values["radioMetric"].replace(' ', '_')) {
+            console.log("Everything up to date :)");
+            return;
+        }
+
+        // Bar Chart needs to display different data
+        this.scenario = this.config.values["radioScenario"];
+        this.metric = this.config.values["radioMetric"].replace(' ', '_');
+
+        if (!(this.scenario in this.data)) {
+            const url = `/api/climate?scenario=${this.scenario}&file=pos_generative`;
+            const data = await fetch(url);
+            this.data[this.scenario] = await data.json();
+            console.log("just fetched data for " + this.scenario);
+            console.log(this.data);
+        }
+
+        this.render();
     }
 
     public prepareData(data: any): void {
-        this.data = data;
+        this.data = {};
+        this.data[this.scenario] = data;
+    }
+
+    public render(): void {
+        console.log("rendering now!");
+
+        // Replace the previous figure with a new one
+        if (d3.select("svg")) {
+            d3.select("svg").remove();
+        }
+
+        // const start = Date.now();
+        const self = this; // capture this BarChart instance for later use within event handlers
+        const data = self.data[self.scenario];
+
+
+        // Data processing
+        const n = BarChart.SPECIES.length; // No. of groups
+        const k = 5; // take every 5th data point (5 year intervals), TODO: decide whether to perform 5 year averaging
+
+        const numPoints = 1 + Math.floor(data["year"].length / k);  // No. data points per group
+        const arr = [...Array(numPoints)];
+
+        var years = arr.map((_, i) => data["year"][k * i]);
+        var CO2 = arr.map((_, i) => data[`CO2_${this.metric}`][k * i]);
+        var CH4 = arr.map((_, i) => data[`CH4_${this.metric}`][k * i]);
+        var N2O = arr.map((_, i) => data[`N2O_${this.metric}`][k * i]);
+
+        const yz = [CO2, CH4, N2O];
+        const xz = d3.range(numPoints).map(i => `${years[i]}`); // x-axis tick labels
+        // console.log(xz);
+
+        // Div properties
+        const width = 1450;
+        const height = 750;
+        const margin = {
+            top: 250,
+            right: 50,
+            bottom: 30,
+            left: 220
+        }
+
+        // Transform data for stacked or grouped presentation
+        const y01z = d3.stack().keys(d3.range(n))(d3.transpose(yz))
+            .map((data, i) => data.map(([y0, y1]) => [y0, y1, i]));
+
+        console.log(y01z);
+
+        const yMax = d3.max(yz, y => d3.max(y));
+        const y1Max = d3.max(y01z, y => d3.max(y, d => d[1]));
+
+        const x = d3.scaleBand()
+            .domain(xz)
+            .rangeRound([margin.left, width - margin.right])
+            .padding(0.08);
+
+        const xAxis = d3.axisBottom(x).tickValues(x.domain().filter((d, i) => i % 2 === 0)); // only display every other x-tick label
+
+        const y = d3.scaleLinear()
+            .domain([0, y1Max])
+            .range([height - margin.bottom, margin.top]);
+        
+        const yAxis = d3.axisLeft(y);
+
+
+        const svg = d3.select(self.DOMElement).append("svg")
+            .attr("viewBox", [0, 0, width, height])
+            .attr("width", width)
+            .attr("height", height)
+            .attr("style", "max-width: 100%; height: auto; height: auto;");
+
+        const rect = svg.selectAll("g")
+            .data(y01z)
+            .join("g")
+            .attr("fill", (d, i) => BarChart.colorMap[BarChart.SPECIES[i]])
+            .selectAll("rect")
+            .data(d => d)
+            .join("rect")
+            .attr("x", (d, i) => x(xz[i]))
+            .attr("y", height - margin.bottom)
+            .attr("width", x.bandwidth())
+            .attr("height", 0);
+
+        // Create labels for when hovering over the bar
+        const tooltip = d3.select("#tooltip");
+
+        const histData = {
+            "CO2": Array.from({length: 1000}, (x, i) => 15 * Math.sin(Math.random() * Math.PI)),
+            "CH4": [],
+            "N2O": []
+        };
+
+        rect.on("mouseover", function(event, d) {
+                console.log(self.config.values);
+                // Reduce opacity of all rects
+                svg.selectAll("rect")
+                    .style("opacity", 0.35);
+                const currentColumnIndex = rect.data().indexOf(d) % numPoints; // index of current rect
+                
+                // Set opacity of rects in the same column to 0.5
+                svg.selectAll("rect").filter((_, i) => i % numPoints === currentColumnIndex)
+                    .style("opacity", 0.5);
+                
+                svg.selectAll("rect").filter((_, i) => i % numPoints > currentColumnIndex)
+                    .style("opacity", 0.05);
+
+                // Set opacity of hovered over rect to 1
+                d3.select(this)
+                    .style("opacity", 1);
+
+                // Create histogram
+                const histSvg = self.createHoverFigure(histData["CO2"]);
+
+                // Calculate position based on the hovered rectangle's position
+                const rectBounds = this.getBoundingClientRect();
+                histSvg.style("left", `${rectBounds.right + 10}px`) // 10px to the right of the rect
+                        .style("top", `${rectBounds.top - 100}px`)
+                        .style("visibility", "visible");
+
+
+
+                // Display hover text
+                // tooltip.style("visibility", "visible")
+                //     .html(`Year: ${xz[rect.data().indexOf(d) % numPoints]}<br>Forcing: ${(d[1] - d[0]).toFixed(2)}`)
+                //     .style("top", (event.pageY - 10) + "px")
+                //     .style("left",(event.pageX + 10) + "px");
+            })
+            .on("mousemove", function(event, d) {
+                tooltip.style("top", (event.pageY - 10) + "px")
+                    .style("left",(event.pageX + 10) + "px");
+            })
+            .on("mouseout", function() {
+                // Restore opacity for all rects
+                svg.selectAll("rect").style("opacity", 1);
+
+                // Hide hover label
+                tooltip.style("visibility", "hidden");
+
+                // Remove histogram
+                d3.select(self.DOMElement).selectAll("svg.pdf-svg").style("visibility", "hidden");
+            });
+
+        // svg.append("title")
+        //     .text("Double click to transition"); // hover label
+
+        svg.append("g")
+            .attr("class", "x axis")
+            .attr("transform", `translate(0,${height - margin.bottom})`)
+            .call(d3.axisBottom(x).tickSizeOuter(0))
+            .call(xAxis); // ensure x-axis only shows correct labels
+        
+        // Add y axis to chart
+        svg.append("g")
+            .attr("class", "y axis")
+            .attr("transform", `translate(${margin.left}, 0)`)
+            .call(yAxis);
+        
+        // Style y axis (doesn't do anything at the moment)
+        d3.selectAll(".y.axis path, .y.axis line")
+            .style("stroke", "#000");
+
+        d3.selectAll(".y.axis text")
+            .style("font-size", "10px");
+
+        
+
+        function transitionGrouped() {
+            y.domain([0, yMax]);
+
+            rect.transition()
+                .duration(500)
+                .delay((d, i) => i * 20)
+                .attr("x", (d, i) => x(xz[i]) + x.bandwidth() / n * d[2])
+                .attr("width", x.bandwidth() / n)
+            .transition()
+                .attr("y", d => y(d[1] - d[0]))
+                .attr("height", d => y(0) - y(d[1] - d[0]));
+        }
+
+        function transitionStacked() {
+            y.domain([0, y1Max]);
+
+            rect.transition()
+                .duration(500)
+                .delay((d, i) => i * 20)
+                .attr("y", d => y(d[1]))
+                .attr("height", d => y(d[0]) - y(d[1]))
+            .transition()
+                .attr("x", (d, i) => x(xz[i]))
+                .attr("width", x.bandwidth());
+        }
+
+        // Initial call to start in one of the states
+        var currentState = "stacked";
+        transitionStacked();
+
+        // Optional: Implement a way to trigger transitions, e.g., via button clicks
+        svg.on("dblclick", function(event) {
+            // Determine the current state and toggle
+            if (currentState === "grouped") {
+                transitionStacked();
+                currentState = "stacked"; // Update the current state
+            } else {
+                transitionGrouped();
+                currentState = "grouped"; // Update the current state
+            }
+        });
+
+        // console.log(Date.now() - start);
     }
 
     private kernelDensityEstimation(data) {
@@ -137,204 +376,5 @@ class BarChart extends Figure {
             .attr("d", area);
         
         return pdfSvg;
-    }
-
-    public render(): void {
-        // const start = Date.now();
-        const self = this; // capture this BarChart instance for later use within event handlers
-
-        // Data processing
-        const n = BarChart.SPECIES.length; // No. of groups
-        const k = 5; // take every 5th data point (5 year intervals), TODO: decide whether to perform 5 year averaging
-
-        const numPoints = 1 + Math.floor(this.data["year"].length / k);  // No. data points per group
-        const arr = [...Array(numPoints)];
-
-        var years = arr.map((_, i) => this.data["year"][k * i]);
-        var CO2 = arr.map((_, i) => this.data[`CO2_${this.metric}`][k * i]);
-        var CH4 = arr.map((_, i) => this.data[`CH4_${this.metric}`][k * i]);
-        var N2O = arr.map((_, i) => this.data[`N2O_${this.metric}`][k * i]);
-
-        const yz = [CO2, CH4, N2O];
-        const xz = d3.range(numPoints).map(i => `${years[i]}`); // x-axis tick labels
-        // console.log(xz);
-
-        // Div properties
-        const width = 1450;
-        const height = 750;
-        const margin = {
-            top: 250,
-            right: 50,
-            bottom: 30,
-            left: 220
-        }
-
-        // Transform data for stacked or grouped presentation
-        const y01z = d3.stack().keys(d3.range(n))(d3.transpose(yz))
-            .map((data, i) => data.map(([y0, y1]) => [y0, y1, i]));
-
-        console.log(y01z);
-
-        const yMax = d3.max(yz, y => d3.max(y));
-        const y1Max = d3.max(y01z, y => d3.max(y, d => d[1]));
-
-        const x = d3.scaleBand()
-            .domain(xz)
-            .rangeRound([margin.left, width - margin.right])
-            .padding(0.08);
-
-        const xAxis = d3.axisBottom(x).tickValues(x.domain().filter((d, i) => i % 2 === 0)); // only display every other x-tick label
-
-        const y = d3.scaleLinear()
-            .domain([0, y1Max])
-            .range([height - margin.bottom, margin.top]);
-        
-        const yAxis = d3.axisLeft(y);
-
-
-        const svg = d3.select(self.DOMElement).append("svg")
-            .attr("viewBox", [0, 0, width, height])
-            .attr("width", width)
-            .attr("height", height)
-            .attr("style", "max-width: 100%; height: auto; height: auto;");
-
-        const rect = svg.selectAll("g")
-            .data(y01z)
-            .join("g")
-            .attr("fill", (d, i) => BarChart.colorMap[BarChart.SPECIES[i]])
-            .selectAll("rect")
-            .data(d => d)
-            .join("rect")
-            .attr("x", (d, i) => x(xz[i]))
-            .attr("y", height - margin.bottom)
-            .attr("width", x.bandwidth())
-            .attr("height", 0);
-
-        // Create labels for when hovering over the bar
-        const tooltip = d3.select("#tooltip");
-
-        const histData = {
-            "CO2": Array.from({length: 1000}, (x, i) => 15 * Math.sin(Math.random() * Math.PI)),
-            "CH4": [],
-            "N2O": []
-        };
-
-        rect.on("mouseover", function(event, d) {
-                console.log(self.config);
-                // Reduce opacity of all rects
-                svg.selectAll("rect")
-                    .style("opacity", 0.35);
-                const currentColumnIndex = rect.data().indexOf(d) % numPoints; // index of current rect
-                
-                // Set opacity of rects in the same column to 0.5
-                svg.selectAll("rect").filter((_, i) => i % numPoints === currentColumnIndex)
-                    .style("opacity", 0.5);
-                
-                svg.selectAll("rect").filter((_, i) => i % numPoints > currentColumnIndex)
-                    .style("opacity", 0.05);
-
-                // Set opacity of hovered over rect to 1
-                d3.select(this)
-                    .style("opacity", 1);
-
-                // Create histogram
-                const histSvg = self.createHoverFigure(histData["CO2"]);
-
-                // Calculate position based on the hovered rectangle's position
-                const rectBounds = this.getBoundingClientRect();
-                histSvg.style("left", `${rectBounds.right + 10}px`) // 10px to the right of the rect
-                        .style("top", `${rectBounds.top - 100}px`)
-                        .style("visibility", "visible");
-
-
-
-                // Display hover text
-                // tooltip.style("visibility", "visible")
-                //     .html(`Year: ${xz[rect.data().indexOf(d) % numPoints]}<br>Forcing: ${(d[1] - d[0]).toFixed(2)}`)
-                //     .style("top", (event.pageY - 10) + "px")
-                //     .style("left",(event.pageX + 10) + "px");
-            })
-            .on("mousemove", function(event, d) {
-                tooltip.style("top", (event.pageY - 10) + "px")
-                    .style("left",(event.pageX + 10) + "px");
-            })
-            .on("mouseout", function() {
-                // Restore opacity for all rects
-                svg.selectAll("rect").style("opacity", 1);
-
-                // Hide hover label
-                tooltip.style("visibility", "hidden");
-
-                // Remove histogram
-                d3.select(self.DOMElement).selectAll("svg.pdf-svg").style("visibility", "hidden");
-            });
-
-        // svg.append("title")
-        //     .text("Double click to transition"); // hover label
-
-        svg.append("g")
-            .attr("class", "x axis")
-            .attr("transform", `translate(0,${height - margin.bottom})`)
-            .call(d3.axisBottom(x).tickSizeOuter(0))
-            .call(xAxis); // ensure x-axis only shows correct labels
-        
-        // Add y axis to chart
-        svg.append("g")
-            .attr("class", "y axis")
-            .attr("transform", `translate(${margin.left}, 0)`)
-            .call(yAxis);
-        
-        // Style y axis (doesn't do anything at the moment)
-        d3.selectAll(".y.axis path, .y.axis line")
-            .style("stroke", "#000");
-
-        d3.selectAll(".y.axis text")
-            .style("font-size", "10px");
-
-        
-
-        function transitionGrouped() {
-            y.domain([0, yMax]);
-
-            rect.transition()
-                .duration(500)
-                .delay((d, i) => i * 20)
-                .attr("x", (d, i) => x(xz[i]) + x.bandwidth() / n * d[2])
-                .attr("width", x.bandwidth() / n)
-            .transition()
-                .attr("y", d => y(d[1] - d[0]))
-                .attr("height", d => y(0) - y(d[1] - d[0]));
-        }
-
-        function transitionStacked() {
-            y.domain([0, y1Max]);
-
-            rect.transition()
-                .duration(500)
-                .delay((d, i) => i * 20)
-                .attr("y", d => y(d[1]))
-                .attr("height", d => y(d[0]) - y(d[1]))
-            .transition()
-                .attr("x", (d, i) => x(xz[i]))
-                .attr("width", x.bandwidth());
-        }
-
-        // Initial call to start in one of the states
-        var currentState = "stacked";
-        transitionStacked();
-
-        // Optional: Implement a way to trigger transitions, e.g., via button clicks
-        svg.on("dblclick", function(event) {
-            // Determine the current state and toggle
-            if (currentState === "grouped") {
-                transitionStacked();
-                currentState = "stacked"; // Update the current state
-            } else {
-                transitionGrouped();
-                currentState = "grouped"; // Update the current state
-            }
-        });
-
-        // console.log(Date.now() - start);
     }
 }
