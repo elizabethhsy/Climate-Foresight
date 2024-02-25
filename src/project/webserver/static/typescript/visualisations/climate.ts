@@ -44,12 +44,5 @@ async function setup_barchart(): void {
     const barChart = new BarChart(graphElement, config);
     barChart.prepareData(data);
     barChart.render();
-
-    document.getElementById("config-0-test").onclick = function () {
-        alert(
-            "Checkbox 0: " + config.values["checkbox0"] + "\n" +
-            "Checkbox 1: " + config.values["checkbox1"] + "\n" +
-            "Radio 0: " + config.values["radio0"]
-        );
-    }
+    
 }
