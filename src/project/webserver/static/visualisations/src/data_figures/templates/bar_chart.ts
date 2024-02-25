@@ -139,7 +139,8 @@ class BarChart extends Figure {
         return pdfSvg;
     }
 
-    public create(): void {
+    public render(): void {
+        // const start = Date.now();
         const self = this; // capture this BarChart instance for later use within event handlers
 
         // Data processing
@@ -219,6 +220,7 @@ class BarChart extends Figure {
         };
 
         rect.on("mouseover", function(event, d) {
+                console.log(self.config);
                 // Reduce opacity of all rects
                 svg.selectAll("rect")
                     .style("opacity", 0.35);
@@ -332,5 +334,7 @@ class BarChart extends Figure {
                 currentState = "grouped"; // Update the current state
             }
         });
+
+        // console.log(Date.now() - start);
     }
 }

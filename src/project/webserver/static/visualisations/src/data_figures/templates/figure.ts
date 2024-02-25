@@ -11,7 +11,7 @@ abstract class Figure {
     }
 
     abstract prepareData(data: any): void;
-    abstract create(): void;
+    abstract render(): void;
 }
 
 enum Species {
