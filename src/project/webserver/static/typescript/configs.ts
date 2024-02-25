@@ -14,7 +14,8 @@ class Config extends Object {
         this.number = number;
     }
 
-    add_value(name: string, label: string, type: string): void {
+    add_value(name: string, label: string, type: string, params?: Array<string>): void {
+        const this_ = this;
         const id = "config-" + this.number + "-" + this.count;
         this.count++;
 
@@ -41,14 +42,45 @@ class Config extends Object {
 
                 this.rootdiv.appendChild(containerEl);
 
-                var this_ = this;
                 checkboxEl.onclick = function() {
                     this_.values[name] = checkboxEl.checked;
                 }
 
                 break;
+            case "radiobutton":
+                if (typeof(params) == 'undefined')
+                    throw new Error("Must pass list of options when type == 'radiobutton'");
+
+                this.values[name] = "none";
+
+                let containers: Array<HTMLLabelElement> = [];
+                for (let i = 0; i < params.length; i++) {
+                    containers.push(
+                        document.createElement("label")
+                    );
+                    containers[containers.length - 1].classList.add("config-item-container", "mdl-radio", "mdl-js-radio", "mdl-js-ripple-effect");
+                    containers[containers.length - 1].htmlFor = "radio-" + name + "-option-" + i;
+
+                    let inputEl = document.createElement("input");
+                    inputEl.type = "radio"; inputEl.id = "radio-" + name + "-option-" + i;
+                    inputEl.classList.add("mdl-radio__button"); inputEl.name = "radio-" + name;
+                    inputEl.value = i.toString();
+                    containers[containers.length - 1].appendChild(inputEl);
+
+                    let labelEl = document.createElement("span");
+                    labelEl.classList.add("mdl-radio__label");
+                    labelEl.innerHTML = params[i];
+                    containers[containers.length - 1].appendChild(labelEl);
+
+                    this.rootdiv.appendChild(containers[containers.length - 1]);
+
+                    inputEl.onclick = function() {
+                        this_.values[name] = document.querySelector('input[name="radio-' + name + '"]:checked').value;
+                    }
+                }
+                break;
             default:
-                return;
+                throw new Error("Type <" + type + "> not recognised.");
         }
     }
 
