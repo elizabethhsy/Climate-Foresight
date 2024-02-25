@@ -36,20 +36,18 @@ setup_barchart();
     <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
 
         <div class="mdl-tabs__tab-bar">
-            <a href="#graph1-panel" class="mdl-tabs__tab is-active">Graph 1</a>
-            <a href="#graph2-panel" class="mdl-tabs__tab">Graph 2</a>
-            <a href="#graph3-panel" class="mdl-tabs__tab">Graph 3</a>
+            <a href="#graph1-panel" class="mdl-tabs__tab is-active">Bar Chart</a>
+            <a href="#graph2-panel" class="mdl-tabs__tab">Multi-Line Graph</a>
+            <a href="#graph3-panel" class="mdl-tabs__tab">Ribbon Graph</a>
         </div>
 
         <div class="mdl-tabs__panel is-active" id="graph1-panel">
             <div class="flex-container mdl-grid">
                 
-                <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp" id="config-0-parent">
-                    <h4>Options</h4>
-                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onclick="test();" id="config-0-test">Test</button>
+                <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp" id="config-1-parent">
                 </div>
 
-                <div class="mdl-cell mdl-cell--10-col card mdl-shadow--4dp" id="chart"></div>
+                <div class="mdl-cell mdl-cell--10-col card mdl-shadow--4dp" id="bar-chart"></div>
 
             </div>
         </div>
@@ -57,7 +55,11 @@ setup_barchart();
         <div class="mdl-tabs__panel" id="graph2-panel">
             <div class="flex-container mdl-grid">
 
-                <!-- Content -->
+                <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp" id="config-2-parent">
+                    <h4>SSP Scenario</h4>
+                </div>
+
+                <div class="mdl-cell mdl-cell--10-col card mdl-shadow--4dp" id="multi-line-graph"></div>
 
             </div>
         </div>
@@ -65,7 +67,12 @@ setup_barchart();
         <div class="mdl-tabs__panel" id="graph3-panel">
             <div class="flex-container mdl-grid">
 
-                <!-- Content -->
+                <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp" id="config-2-parent">
+                    <h4>SSP Scenario</h4>
+                </div>
+
+
+                <div class="mdl-cell mdl-cell--10-col card mdl-shadow--4dp" id="ribbon-graph"></div>
 
             </div>
         </div>

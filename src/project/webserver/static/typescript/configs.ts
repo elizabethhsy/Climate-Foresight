@@ -10,10 +10,17 @@ class Config extends Object {
     private listeners = [];
 
     constructor(number: number) {
-        super()
+        super();
         this.rootdiv = document.createElement("div");
         this.rootdiv.classList.add("config-container");
         this.number = number;
+    }
+
+    add_heading(title: string) {
+        const tempDiv = document.createElement('div');
+        tempDiv.innerHTML = '<h4>' + title + '</h4>';
+        const titleEl = tempDiv.firstChild;
+        this.rootdiv.appendChild(titleEl);
     }
 
     add_value(name: string, label: string, type: string, params?: Array<string>, defaultValue?: string): void {
