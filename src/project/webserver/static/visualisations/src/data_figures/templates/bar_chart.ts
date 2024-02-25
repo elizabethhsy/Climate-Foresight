@@ -2,7 +2,6 @@
 
 // import * as d3 from "d3";
 
-// TODO: move stuff from create to prepareData
 class BarChart extends Figure {
     private scenario: string;
     private metric: string;  // options: forcing, emissions, airborne_emissions, concentration
@@ -17,15 +16,12 @@ class BarChart extends Figure {
 
     constructor(DOMElement: HTMLElement, config) {
         super(DOMElement, config);
-
-        // Default options
+        this.scenario = "none";
+        this.metric = "none";
         this.data = {};
-        this.scenario = this.config.values["radioScenario"];
-        this.metric = this.config.values["radioMetric"].replace(' ', '_');
-        console.log(this.scenario);
     }
 
-    public async update() {
+    public async update(render: boolean = true) {
         console.log("Updating bar chart");
 
         if (this.scenario === this.config.values["radioScenario"].replace(' ', '_') && this.metric === this.config.values["radioMetric"].replace(' ', '_')) {
@@ -37,24 +33,31 @@ class BarChart extends Figure {
         this.scenario = this.config.values["radioScenario"];
         this.metric = this.config.values["radioMetric"].replace(' ', '_');
 
-        if (!(this.scenario in this.data)) {
-            const url = `/api/climate?scenario=${this.scenario}&file=pos_generative`;
-            const data = await fetch(url);
-            this.data[this.scenario] = await data.json();
-            console.log("just fetched data for " + this.scenario);
-            console.log(this.data);
-        }
+        await this.getDataForScenario(this.scenario)
 
-        this.render();
+        if (render) {
+            this.render();
+        }
     }
 
-    public prepareData(data: any): void {
-        this.data = {};
-        this.data[this.scenario] = data;
+    private async getDataForScenario(scenario: string): void {
+        if (!(this.scenario in this.data)) {
+            const url = `/api/climate?scenario=${scenario}&file=pos_generative`;
+            const data = await fetch(url);
+            this.data[scenario] = await data.json();
+            console.log("just fetched data for " + scenario);
+            console.log(this.data);
+        }
+    }
+
+    // Initialize bar chart without rendering
+    public async init(): void {
+        await this.update(false);
     }
 
     public render(): void {
         console.log("rendering now!");
+        console.log(this.data);
 
         // Replace the previous figure with a new one
         if (d3.select("svg")) {

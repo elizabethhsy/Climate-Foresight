@@ -11,9 +11,14 @@ abstract class Figure {
         }
     }
 
-    abstract prepareData(data: any): void;
-    abstract update(): void;
+    // Function to call on load but before rendering
+    abstract init(): void;
+    
+    // Function to create figure on web page
     abstract render(): void;
+
+    // Function to update/replace figure on web page
+    abstract update(render?: boolean): void;
 }
 
 enum Species {
