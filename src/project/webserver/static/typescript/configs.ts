@@ -75,7 +75,8 @@ class Config extends Object {
                     this.rootdiv.appendChild(containers[containers.length - 1]);
 
                     inputEl.onclick = function() {
-                        this_.values[name] = document.querySelector('input[name="radio-' + name + '"]:checked').value;
+                        const radioButton = document.querySelector('input[name="radio-' + name + '"]:checked'); // find the checked radio button
+                        this_.values[name] = radioButton?.parentElement?.childNodes[1].innerHTML; // return label for that button
                     }
                 }
                 break;
