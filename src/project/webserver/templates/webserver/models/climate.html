@@ -4,17 +4,23 @@
 
 {% block head %}
 
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+
     {% compress js %}
     <script>var exports = {};</script>
-    <script type="text/typescript" src="{% static "typescript/visualisations/climate.ts" %}" />
+    <script type="text/typescript" src="{% static "visualisations/src/data_figures/templates/figure.ts" %}" />
+    <script type="text/typescript" src="{% static "visualisations/src/data_figures/templates/bar_chart.ts" %}" />
     <script type="text/typescript" src="{% static "visualisations/src/data_figures/bar_charts/forcings.ts" %}" />
+    <script type="text/typescript" src="{% static "typescript/visualisations/climate.ts" %}" />
     <script type="text/typescript" src="{% static "typescript/configs.ts" %}"/>
     {% endcompress %}
 
 {% endblock head %}
 
 {% block onload %}
-setup_config();
+{% comment %} setup_config(); {% endcomment %}
+setup_barchart();
+{% comment %} createBarChart(); {% endcomment %}
 {% endblock onload %}
 
 {% block content %}
@@ -40,36 +46,13 @@ setup_config();
 
         <div class="mdl-tabs__panel is-active" id="graph1-panel">
             <div class="flex-container mdl-grid">
-
-                <div class="mdl-cell mdl-cell--4-col card mdl-shadow--4dp">
-                    <p>Viz Placeholder</p>
-                    <img src="https://images.twinkl.co.uk/tw1n/image/private/t_630/u/ux/graph-wiki_ver_1.png" class="vizplaceholder"/>
-                </div>
-
-                <div class="mdl-cell mdl-cell--6-col card mdl-shadow--4dp">
-                    <p>Viz Placeholder</p>
-                    <img src="https://images.twinkl.co.uk/tw1n/image/private/t_630/u/ux/graph-wiki_ver_1.png" class="vizplaceholder"/>
-                </div>
-
+                
                 <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp" id="config-0-parent">
                     <h4>Options</h4>
                     <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onclick="test();" id="config-0-test">Test</button>
                 </div>
 
-                <div class="mdl-cell mdl-cell--4-col card mdl-shadow--4dp">
-                    <p>Viz Placeholder</p>
-                    <img src="https://images.twinkl.co.uk/tw1n/image/private/t_630/u/ux/graph-wiki_ver_1.png" class="vizplaceholder"/>
-                </div>
-
-                <div class="mdl-cell mdl-cell--4-col card mdl-shadow--4dp">
-                    <p>Viz Placeholder</p>
-                    <img src="https://images.twinkl.co.uk/tw1n/image/private/t_630/u/ux/graph-wiki_ver_1.png" class="vizplaceholder"/>
-                </div>
-
-                <div class="mdl-cell mdl-cell--4-col card mdl-shadow--4dp">
-                    <p>Viz Placeholder</p>
-                    <img src="https://images.twinkl.co.uk/tw1n/image/private/t_630/u/ux/graph-wiki_ver_1.png" class="vizplaceholder"/>
-                </div>
+                <div class="mdl-cell mdl-cell--10-col card mdl-shadow--4dp" id="chart"></div>
 
             </div>
         </div>

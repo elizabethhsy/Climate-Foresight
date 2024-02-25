@@ -1,9 +1,9 @@
-import { Figure, Species } from './figure';
+// import { Figure, Species } from './figure';
 
-import * as d3 from "d3";
+// import * as d3 from "d3";
 
 // TODO: move stuff from create to prepareData
-export class BarChart extends Figure {
+class BarChart extends Figure {
     private data: any[] = [];
     private metric: string = "forcing";  // options: forcing, emissions, airborne_emissions, concentration
     
@@ -14,8 +14,8 @@ export class BarChart extends Figure {
         N2O: '#ff9f4f'
     };
 
-    constructor(DOMElement: HTMLElement) {
-        super(DOMElement);
+    constructor(DOMElement: HTMLElement, config) {
+        super(DOMElement, config);
     }
 
     public prepareData(data: any): void {
