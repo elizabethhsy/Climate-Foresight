@@ -1,5 +1,5 @@
 import * as d3 from "d3";
-import { Figure } from './graph';
+import { Figure } from './figure';
 
 export class OverlayedLineGraph extends Figure {
     private graphData: any[] = [];

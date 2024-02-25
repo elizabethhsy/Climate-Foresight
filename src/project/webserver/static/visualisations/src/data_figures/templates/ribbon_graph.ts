@@ -1,4 +1,4 @@
-import { Figure } from './graph';
+import { Figure } from './figure';
 import Plotly from 'plotly.js-dist';
 
 export class PlotlyRibbonGraph extends Figure {

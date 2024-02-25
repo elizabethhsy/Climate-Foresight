@@ -1,4 +1,4 @@
-import { Figure } from './graph';
+import { Figure } from './figure';
 
 import * as d3 from "d3";
 
