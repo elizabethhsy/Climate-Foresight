@@ -1,5 +1,5 @@
-import * as d3 from "d3";
-import { Figure } from './figure';
+// import * as d3 from "d3";
+// import { Figure } from './figure';
 
 type MetricGraph = {
     metric: string,
@@ -26,17 +26,23 @@ const margin = {
     left: 40
 }
 
-export class OverlayedLineGraph extends Figure {
+class OverlayedLineGraph extends Figure {
     private layout: any;
     private config: any;
     private metrics = ["emissions", "airborne_emissions", "concentration", "forcing"]
     private metricGraphs: MetricGraph[] = [];
 
-    constructor(DOMElement: HTMLElement) {
-        super(DOMElement);
+    constructor(DOMElement: HTMLElement, config) {
+        super(DOMElement, config);
     }
 
-    public prepareData(data: any): void {
+    public async init(): void {
+        
+        const url = `/api/climate?scenario=ssp585&file=pos_generative_rand`;
+        const response = await fetch(url);
+        const data = await response.json();
+        console.log(data);
+
         const start = Date.now();
         const sp = "CO2";
         var specie_data = data["year"].map((year, i) => ({
@@ -67,12 +73,16 @@ export class OverlayedLineGraph extends Figure {
         console.log(end-start);
     }
 
-    public create(): void {
+    public async update(render: boolean = true) {
+        return;
+    }
+
+    public render(): void {
         const start = Date.now();
         const sp = "CO2";
 
         // Create container for the screen
-        const graphContainer = d3.select("#graph").style("display", "flex").style("flex-wrap", "wrap");
+        const graphContainer = d3.select(this.DOMElement).style("display", "flex").style("flex-wrap", "wrap");
 
         this.metricGraphs.forEach(graph => {
             console.log(graph);
