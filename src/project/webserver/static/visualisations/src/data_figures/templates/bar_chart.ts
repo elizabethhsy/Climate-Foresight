@@ -3,11 +3,16 @@
 // import * as d3 from "d3";
 
 class BarChart extends Figure {
+    // For storing the current state of the bar chart
     private scenario: string;
     private metric: string;  // options: forcing, emissions, airborne_emissions, concentration
+    private species: Array<string>;
+
+    // For caching fetched data
     private data: Object;
     
-    static SPECIES = ["CO2", "CH4", "N2O"];
+    static INTERVAL = 5;  // bar chart is in 5 year intervals (i.e. taking every 5th data point)
+
     static colorMap = { // TODO: move to parent class?
         CO2: '#4a8dbb',
         CH4: '#6ebd6e',
@@ -18,22 +23,32 @@ class BarChart extends Figure {
         super(DOMElement, config);
         this.scenario = "none";
         this.metric = "none";
+        this.species = [];
         this.data = {};
     }
 
     public async update(render: boolean = true) {
         console.log("Updating bar chart");
 
-        if (this.scenario === this.config.values["radioScenario"].replace(' ', '_') && this.metric === this.config.values["radioMetric"].replace(' ', '_')) {
+        // Check whether there is anything to update
+        const checkedBoxes = this.getCheckedBoxes();
+        if (
+            this.scenario === this.config.values["radioBarChartScenario"].replace(' ', '_')
+            && this.metric === this.config.values["radioBarChartMetric"].replace(' ', '_')
+            && checkedBoxes.length === this.species.length
+            && this.getCheckedBoxes().every((v, i) => v === this.species[i])
+        ) {
             console.log("Everything up to date :)");
             return;
         }
 
-        // Bar Chart needs to display different data
-        this.scenario = this.config.values["radioScenario"];
-        this.metric = this.config.values["radioMetric"].replace(' ', '_');
+        // Update internal state
+        this.scenario = this.config.values["radioBarChartScenario"];
+        this.metric = this.config.values["radioBarChartMetric"].replace(' ', '_');
+        this.species = checkedBoxes;
 
-        await this.getDataForScenario(this.scenario)
+        // Fetch data if necessary
+        await this.getDataForScenario(this.scenario);
 
         if (render) {
             this.render();
@@ -52,26 +67,37 @@ class BarChart extends Figure {
 
     // Initialize bar chart without rendering
     public async init(): void {
-        await this.update(false);
+        this.scenario = this.config.values["radioBarChartScenario"];
+        this.metric = this.config.values["radioBarChartMetric"].replace(' ', '_');
+        this.species = this.getCheckedBoxes();
+        await this.getDataForScenario(this.scenario);
+    }
+
+    private getCheckedBoxes() {
+        const checkedBoxes = [];
+        for (const key in this.config.values) {
+            if (key.includes("checkbox") && this.config.values[key]) {
+                checkedBoxes.push(key.replace("checkbox", ""));
+            }
+        }
+        return checkedBoxes;
     }
 
     public render(): void {
-        console.log("rendering now!");
-        console.log(this.data);
-
-        // Replace the previous figure with a new one
-        if (d3.select("svg")) {
-            d3.select("svg").remove();
-        }
-
-        // const start = Date.now();
         const self = this; // capture this BarChart instance for later use within event handlers
-        const data = self.data[self.scenario];
+
+        // Remove existing svg elements and replace with new figure
+        if (d3.select(self.DOMElement).select("svg")) {
+            d3.select(self.DOMElement).selectAll("svg").remove();
+        }
 
 
         // Data processing
-        const n = BarChart.SPECIES.length; // No. of groups
-        const k = 5; // take every 5th data point (5 year intervals), TODO: decide whether to perform 5 year averaging
+        console.log(self.species);
+        const data = self.data[self.scenario];
+        const checkedBoxes = self.species;
+        const n = checkedBoxes.length; // No. of groups
+        const k = BarChart.INTERVAL;
 
         const numPoints = 1 + Math.floor(data["year"].length / k);  // No. data points per group
         const arr = [...Array(numPoints)];
@@ -81,7 +107,18 @@ class BarChart extends Figure {
         var CH4 = arr.map((_, i) => data[`CH4_${this.metric}`][k * i]);
         var N2O = arr.map((_, i) => data[`N2O_${this.metric}`][k * i]);
 
-        const yz = [CO2, CH4, N2O];
+        // TODO: make this part extensible
+        const yz = [];
+        if (self.species.includes("CO2")) {
+            yz.push(CO2);
+        }
+        if (self.species.includes("CH4")) {
+            yz.push(CH4);
+        }
+        if (self.species.includes("N2O")) {
+            yz.push(N2O);
+        }
+
         const xz = d3.range(numPoints).map(i => `${years[i]}`); // x-axis tick labels
         // console.log(xz);
 
@@ -89,17 +126,15 @@ class BarChart extends Figure {
         const width = 1450;
         const height = 750;
         const margin = {
-            top: 250,
-            right: 50,
-            bottom: 30,
-            left: 220
+            top: 60,
+            right: 70,
+            bottom: 100,
+            left: 100
         }
 
         // Transform data for stacked or grouped presentation
         const y01z = d3.stack().keys(d3.range(n))(d3.transpose(yz))
             .map((data, i) => data.map(([y0, y1]) => [y0, y1, i]));
-
-        console.log(y01z);
 
         const yMax = d3.max(yz, y => d3.max(y));
         const y1Max = d3.max(y01z, y => d3.max(y, d => d[1]));
@@ -127,7 +162,7 @@ class BarChart extends Figure {
         const rect = svg.selectAll("g")
             .data(y01z)
             .join("g")
-            .attr("fill", (d, i) => BarChart.colorMap[BarChart.SPECIES[i]])
+            .attr("fill", (d, i) => BarChart.colorMap[self.species[i]])
             .selectAll("rect")
             .data(d => d)
             .join("rect")

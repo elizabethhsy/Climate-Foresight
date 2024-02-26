@@ -20,9 +20,3 @@ abstract class Figure {
     // Function to update/replace figure on web page
     abstract update(render?: boolean): void;
 }
-
-enum Species {
-    CO2 = 0,
-    CH4 = 1,
-    N2O = 2
-}
