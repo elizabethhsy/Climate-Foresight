@@ -41,8 +41,7 @@ async function setupMultilineGraph(): void {
     await graph.init();
     setTimeout(() => {
         graph.render();
-    }, 5000);
-    document.getElementById("radio-radioMultilineScenario-option-0").attr("checked",true);
+    }, 10000);
 }
 
 async function setupRibbonGraph(): void {
@@ -64,6 +63,6 @@ async function setupRibbonGraph(): void {
 
 async function setupClimateFigures(): void {
     setupBarChart();
-    // setupMultilineGraph();
-    // setupRibbonGraph();
+    setupMultilineGraph();
+    setupRibbonGraph();
 }

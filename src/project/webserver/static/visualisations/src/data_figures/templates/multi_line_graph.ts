@@ -153,7 +153,7 @@ class OverlayedLineGraph extends Figure {
                 console.log(svgRect);
 
                 // Create the positional scales.
-                const xScale = d3.scaleUtc()
+                const xScale = d3.scaleLinear()
                 .domain(d3.extent(graph.x))
                 .range([margin.left, svgRect.width - margin.right]);
 
@@ -183,7 +183,7 @@ class OverlayedLineGraph extends Figure {
                 // Add the horizontal axis.
                 svg.append("g")
                     .attr("transform", `translate(0,${svgRect.height - margin.bottom})`)
-                    .call(d3.axisBottom(xScale).tickSizeOuter(0));
+                    .call(d3.axisBottom(xScale).tickFormat(d3.format("d")).tickSizeOuter(0));
 
                 // Add the vertical axis.
                 svg.append("g")
