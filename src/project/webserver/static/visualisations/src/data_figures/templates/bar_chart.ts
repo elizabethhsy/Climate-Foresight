@@ -329,7 +329,6 @@ class BarChart extends Figure {
         });
         return density;
     }
-      
 
     private createHoverFigure(data) {
         // data = this.kernelDensityEstimation(data);
@@ -390,6 +389,29 @@ class BarChart extends Figure {
             .y0(height - margin.bottom) // Base line - bottom of the graph
             .y1(d => y(d.val)); // Top line - your data line
         
+        // const defs = pdfSvg.append("defs");
+
+        // const gradient = defs.append("linearGradient")
+        //     .attr("id", "densityGradient")
+        //     .attr("gradientUnits", "userSpaceOnUse")
+        //     .attr("x1", 0).attr("y1", y(d3.min(data, d => d.val)))
+        //     .attr("x2", 0).attr("y2", y(d3.max(data, d => d.val)));
+
+        // gradient.append("stop")
+        //     .attr("offset", "0%")
+        //     .attr("stop-color", "lightblue") // Light color for low density
+        //     .attr("stop-opacity", 1.0);
+
+        // gradient.append("stop")
+        //     .attr("offset", "100%")
+        //     .attr("stop-color", "darkblue") // Dark color for high density
+        //     .attr("stop-opacity", 1);
+
+        // pdfSvg.append("path")
+        //     .datum(data) // Use datum since it's a single object
+        //     .attr("fill", "url(#densityGradient)")
+        //     .attr("d", area);
+
         const defs = pdfSvg.append("defs");
 
         const gradient = defs.append("linearGradient")
@@ -398,18 +420,22 @@ class BarChart extends Figure {
             .attr("x1", 0).attr("y1", y(d3.min(data, d => d.val)))
             .attr("x2", 0).attr("y2", y(d3.max(data, d => d.val)));
 
-        gradient.append("stop")
-            .attr("offset", "0%")
-            .attr("stop-color", "lightblue") // Light color for low density
-            .attr("stop-opacity", 1.0);
+        // Dynamically create gradient stops based on density values
+        const densityValues = data.map(d => d.density);
+        const maxDensity = d3.max(densityValues);
+        const minDensity = d3.min(densityValues);
+        const numStops = 10; // Number of gradient stops
 
-        gradient.append("stop")
-            .attr("offset", "100%")
-            .attr("stop-color", "darkblue") // Dark color for high density
-            .attr("stop-opacity", 1);
+        for (let i = 0; i <= numStops; i++) {
+            const density = minDensity + (i / numStops) * (maxDensity - minDensity);
+            const opacity = density / maxDensity; // Normalize the density to [0, 1] for opacity
+            gradient.append("stop")
+                .attr("offset", `${(i / numStops) * 100}%`)
+                .attr("stop-color", `rgba(0, 0, 255, ${opacity})`); // Example: blue with variable opacity
+        }
 
         pdfSvg.append("path")
-            .datum(data) // Use datum since it's a single object
+            .datum(data)
             .attr("fill", "url(#densityGradient)")
             .attr("d", area);
         

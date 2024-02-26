@@ -23,57 +23,6 @@ class Config extends Object {
         this.rootdiv.appendChild(titleEl);
     }
 
-    public addCheckboxes(listName: string, values: Array<Object>) {
-        // name: string, label: string, defaultValue?: boolean
-        const self = this;
-
-        for (const value in values) {
-
-            const id = "config-" + this.number + "-" + this.count;
-            this.count++;
-
-            const name = value["name"];
-            const label = value["label"];
-            const defaultValue = value["default"];
-
-            if (!("checkboxes" in this.values)) {
-                this.values["checkboxes"] = {};
-            }
-            if (!(listName in this.values["checkboxes"])) {
-                this.values["checkboxes"][listName] = {};
-            }
-
-
-            this.values["checkboxes"][listName][name] = defaultValue;
-
-            const containerEl = document.createElement("label");
-            containerEl.classList.add("config-item-container", "mdl-checkbox", "mdl-js-checkbox", "mdl-js-ripple-effect");
-            containerEl.htmlFor = id;
-
-            const checkboxEl = document.createElement("input");
-            checkboxEl.type = "checkbox";
-            checkboxEl.id = id;
-            checkboxEl.classList.add("mdl-checkbox__input");
-
-            if (defaultValue) {
-                checkboxEl.checked = true;
-            }
-            containerEl.appendChild(checkboxEl);
-
-            const labelEl = document.createElement("span");
-            labelEl.classList.add("mdl-checkbox__label");
-            labelEl.innerHTML = label;
-            containerEl.appendChild(labelEl);
-
-            this.rootdiv.appendChild(containerEl);
-
-            checkboxEl.onclick = function() {
-                self.values["checkboxes"][listName][name] = checkboxEl.checked;
-                self.notify(); // notify subscribers
-            }
-        }
-    }
-
     public add_value(name: string, label: string, type: string, params?: Array<string>, defaultValue?: string): void {
         const this_ = this;
         const id = "config-" + this.number + "-" + this.count;
