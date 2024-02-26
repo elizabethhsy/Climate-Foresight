@@ -11,11 +11,6 @@ async function setupBarChart(): void {
     config.add_heading("Data");
     config.add_value("radioBarChartMetric", "Radio Metric", "radiobutton", ["forcing", "concentration", "emissions", "airborne emissions"], "forcing");
     config.add_heading("Species");
-    // config.addCheckboxes("species", [
-    //     {name: "checkboxCO2", label: "CO2", default: true},
-    //     {name: "checkboxCH4", label: "CH4", default: true},
-    //     {name: "checkboxN2O", label: "N2O", default: true}
-    // ])
     config.add_value("checkboxCO2", "CO2", "checkbox", null, true);
     config.add_value("checkboxCH4", "CH4", "checkbox", null, true);
     config.add_value("checkboxN2O", "N2O", "checkbox", null, true);
