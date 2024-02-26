@@ -15,6 +15,10 @@
     <script type="text/typescript" src="{% static "typescript/configs.ts" %}"/>
     {% endcompress %}
 
+    {% compress css %}
+    <link rel="stylesheet" type="text/x-scss" href="{% static "stylesheets/configs.scss" %}" />
+    {% endcompress %}
+
 {% endblock head %}
 
 {% block onload %}
@@ -46,7 +50,7 @@ setup_barchart();
 
         <div class="mdl-tabs__panel is-active" id="graph1-panel">
             <div class="flex-container mdl-grid">
-                
+
                 <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp" id="config-0-parent">
                     <h4>Options</h4>
                     <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onclick="test();" id="config-0-test">Test</button>

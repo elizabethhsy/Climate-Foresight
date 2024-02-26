@@ -22,7 +22,7 @@ class Config extends Object {
         this.ids[name] = id;
 
         switch (type) {
-            case "checkbox":
+            case "checkbox": {
                 this.values[name] = false;
 
                 const containerEl = document.createElement("label");
@@ -47,7 +47,7 @@ class Config extends Object {
                 }
 
                 break;
-            case "radiobutton":
+            } case "radiobutton": {
                 if (typeof(params) == 'undefined')
                     throw new Error("Must pass list of options when type == 'radiobutton'");
 
@@ -79,12 +79,56 @@ class Config extends Object {
                     }
                 }
                 break;
-            default:
+            } case "slider": {
+                if (typeof(params) == 'undefined')
+                    throw new Error("Must pass list of options when type == 'slider', with format [<min>, <max>, [range]]");
+
+                this.values[name] = params[0];
+
+                const containerEl = document.createElement("div");
+                containerEl.classList.add("config-item-container", "config-slider-container");
+
+                const labelEl = document.createElement("span");
+                labelEl.innerHTML = label;
+                labelEl.classList.add("slider-label");
+                containerEl.appendChild(labelEl);
+
+                const innerContainerEl = document.createElement("div");
+                innerContainerEl.classList.add("slider-inner-container");
+
+                const leftLabel = document.createElement("span");
+                leftLabel.innerHTML = params[0].toString();
+                leftLabel.classList.add("slider-end-label");
+
+                const rightLabel = document.createElement("span");
+                rightLabel.innerHTML = params[1].toString();
+                rightLabel.classList.add("slider-end-label")
+
+                const inputEl = document.createElement("input");
+                inputEl.classList.add("mdl-slider", "mdl-js-slider"); inputEl.tabIndex = 0;
+                inputEl.type = "range"; inputEl.min = params[0]; inputEl.max = params[1]; inputEl.value = params[0];
+                if (params.length == 3)
+                    inputEl.step = params[2];
+
+                innerContainerEl.appendChild(leftLabel);
+                innerContainerEl.appendChild(inputEl);
+                innerContainerEl.appendChild(rightLabel);
+                containerEl.appendChild(innerContainerEl);
+
+                this.rootdiv.appendChild(containerEl);
+
+                inputEl.oninput = function() {
+                    this_.values[name] = inputEl.value;
+                }
+
+                break;
+            } default:
                 throw new Error("Type <" + type + "> not recognised.");
         }
     }
 
     instantiate(parent: HTMLElement): void {
         parent.appendChild(this.rootdiv);
+        componentHandler.upgradeDom();
     }
 }
