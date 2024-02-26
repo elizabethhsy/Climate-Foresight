@@ -80,5 +80,6 @@ JS Visualization Libraries
     - static `GET /api/climate2/<scenario>/species/<specie>.json`
 
 - 3body: This is expected to undergo significant changes, since the 3body team hasn't gotten back to me just yet...
-    - `GET /api/3body?x=XXX`<br>
-    where `x` is the noise introduced to `default_prior_expectations`. 
+    - static `GET /api/3body/<x>/deriv_generative.json`. x is one of `["0.00", "0.01", ..., "0.07"]` without quotes. (Trailing and leading zeroes are significant as they are statically served.)
+    We can do it dynamically but this would be significantly faster in production.
+
