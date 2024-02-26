@@ -30,9 +30,9 @@ async function setupMultilineGraph(): void {
     const config = new Config(2);
 
     config.add_heading("SSP Scenario");
-    config.add_value("radioMultilineScenario", "Radio Scenario", "radiobutton", ["ssp119", "ssp126", "ssp245", "ssp370", "ssp434", "ssp534-over", "ssp585"], "ssp119");
+    config.add_value("radioMultilineScenario", "Radio Scenario", "dropdown", ["ssp119", "ssp126", "ssp245", "ssp370", "ssp434", "ssp534-over", "ssp585"], "ssp119");
     config.add_heading("Species");
-    config.add_value("radioMultilineSpecies", "Radio Scenario", "radiobutton", ["CO2", "CH4", "N2O"], "CO2");
+    config.add_value("radioMultilineSpecies", "Radio Scenario", "dropdown", ["CO2", "CH4", "N2O"], "CO2");
 
     config.instantiate(configParent); // instantiate on the web page
 
@@ -41,7 +41,7 @@ async function setupMultilineGraph(): void {
     await graph.init();
     setTimeout(() => {
         graph.render();
-    }, 10000);
+    }, 4000);
 }
 
 async function setupRibbonGraph(): void {
