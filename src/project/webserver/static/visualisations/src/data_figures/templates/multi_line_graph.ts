@@ -14,14 +14,17 @@ type MetricGraph = {
 // Declare the chart dimensions and margins.
 const width = 1200;
 const height = 800;
+
+const tooltipWidth = 200;
+const tooltipHeight = 100;
+const scalingFactor = 10;
+
 const margin = {
-    top: 20,
-    right: 20,
+    top: tooltipHeight/2,
+    right: tooltipWidth/2,
     bottom: 50,
     left: 40
 }
-const tooltipRadius = 50;
-const scalingFactor = 10;
 
 export class OverlayedLineGraph extends Figure {
     private layout: any;
@@ -45,7 +48,7 @@ export class OverlayedLineGraph extends Figure {
             run: data["run"][i]
         }))
 
-        specie_data = specie_data.filter(d => d.run < 100);
+        // specie_data = specie_data.filter(d => d.run < 100);
 
         for (var metric of this.metrics) {
             let graph:MetricGraph = {
@@ -88,16 +91,16 @@ export class OverlayedLineGraph extends Figure {
             console.log(svgRect);
 
             // Create the positional scales.
-            const x = d3.scaleUtc()
+            const xScale = d3.scaleUtc()
             .domain(d3.extent(graph.x))
             .range([margin.left, svgRect.width - margin.right]);
 
-            const y = d3.scaleLinear()
+            const yScale = d3.scaleLinear()
             .domain(d3.extent(graph.y)).nice()
             .range([svgRect.height - margin.bottom, margin.top]);
 
-            const scaled_x = graph.x.map(v => x(v));
-            const scaled_y = graph.y.map(v => y(v));
+            const scaled_x = graph.x.map(v => xScale(v));
+            const scaled_y = graph.y.map(v => yScale(v));
 
             const points = scaled_x.map(function(e, i) {
                 const x = e;
@@ -118,12 +121,12 @@ export class OverlayedLineGraph extends Figure {
             // Add the horizontal axis.
             svg.append("g")
                 .attr("transform", `translate(0,${svgRect.height - margin.bottom})`)
-                .call(d3.axisBottom(x).tickSizeOuter(0));
+                .call(d3.axisBottom(xScale).tickSizeOuter(0));
 
             // Add the vertical axis.
             svg.append("g")
                 .attr("transform", `translate(${margin.left},0)`)
-                .call(d3.axisLeft(y))
+                .call(d3.axisLeft(yScale))
                 .call(g => g.select(".domain").remove())
                 .call(g => g.append("text")
                     .attr("x", 0)
@@ -149,18 +152,19 @@ export class OverlayedLineGraph extends Figure {
             const tooltip = svg.append("g")
                 .attr("display", "none");
 
-            tooltip.append("circle")
-                .attr("r", tooltipRadius)
+            tooltip.append("rect")
+                .attr("width", tooltipWidth)
+                .attr("height", tooltipHeight)
                 .attr("fill", "rgba(255, 255, 255, 1)")
-                .attr("stroke", "black");
+                .attr("stroke", "#999");
 
             tooltip.append("text")
                 .attr("text-anchor", "middle")
                 .attr("y", -8);
 
             const tooltipGraph = tooltip.append("svg")
-                .attr("width", tooltipRadius)
-                .attr("height", tooltipRadius);
+                .attr("width", tooltipWidth)
+                .attr("height", tooltipHeight);
             
             svg
                 .on("click", (event) => {
@@ -171,31 +175,32 @@ export class OverlayedLineGraph extends Figure {
                     console.log(i);
                     const p = points[i]
                     console.log(points[i]);
-                    tooltip.attr("transform", `translate(${p[0]},${p[1]})`);
+                    tooltip.attr("transform", `translate(${p[0]-tooltipWidth/2},${p[1]-tooltipHeight/2})`);
                     tooltip.attr("display", null);
 
                     const zoomedInData = this.getZoomedInData(points, points[i]);
-                    renderZoomedInData(zoomedInData);
+                    renderZoomedInData(zoomedInData, points[i]);
+                    tooltipGraph.attr("transform", `translate(${tooltipWidth/2}, ${tooltipHeight/2})`)
                 })
             
-                function renderZoomedInData(data) {
+                function renderZoomedInData(data, point) {
                     // Remove existing content
                     tooltipGraph.selectAll("*").remove();
 
                     const xDomain = d3.extent(data, d=>d[0]);
                     const yDomain = d3.extent(data, d=>d[1]);
-
-                    const xScale = d3.scaleLinear()
+                    
+                    var miniXScale = d3.scaleLinear()
                         .domain(xDomain)
-                        .range([-tooltipRadius, tooltipRadius]); // Full circle in radians
+                        .range([0, tooltipWidth]);
 
-                    const yScale = d3.scaleLinear()
+                    const miniYScale = d3.scaleLinear()
                         .domain(yDomain)
-                        .range([tooltipRadius, -tooltipRadius]); // Radius of the circle
-                        
+                        .range([0, tooltipHeight]);
+
                     const scaledData = data.map(d => {
-                        const x = xScale(d[0]);
-                        const y = yScale(d[1]);
+                        const x = miniXScale(d[0]);
+                        const y = miniYScale(d[1]);
                         const run = d[2];
                         return [x, y, run];
                     })
@@ -212,6 +217,7 @@ export class OverlayedLineGraph extends Figure {
                         .attr("stroke-linejoin", "round")
                         .attr("stroke-linecap", "round")
                         .attr("stroke-opacity", 0.1)
+                        .style("mix-blend-mode", "multiply")
                         .attr("d", line);
                 }
         })
@@ -240,7 +246,8 @@ export class OverlayedLineGraph extends Figure {
     private getZoomedInData(points, point):any {
         console.log(points);
         console.log(point[0]);
-        let coordinates = points.filter(v => (Math.sqrt(Math.pow(Math.abs(v[0]-point[0]),2) +  Math.pow(Math.abs(v[1]-point[1]), 2)) <= (tooltipRadius)));
+        console.log("max distance: ", tooltipWidth/(2*scalingFactor));
+        let coordinates = points.filter(v => (Math.abs(v[0] - point[0]) <= (tooltipWidth/(2*scalingFactor))));
         console.log(coordinates);
         return coordinates;
     }
