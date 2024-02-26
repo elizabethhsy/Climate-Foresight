@@ -30,23 +30,25 @@ async function setupMultilineGraph(): void {
     const config = new Config(2);
 
     config.add_heading("SSP Scenario");
-    config.add_value("radioScenario", "Radio Scenario", "radiobutton", ["ssp119", "ssp126", "ssp245", "ssp370", "ssp434", "ssp534-over", "ssp585"], "ssp119");
-    // config.add_heading("Data");
-    // config.add_value("radioMetric", "Radio Metric", "radiobutton", ["forcing", "concentration", "emissions", "airborne emissions"], "forcing");
+    config.add_value("radioMultilineScenario", "Radio Scenario", "radiobutton", ["ssp119", "ssp126", "ssp245", "ssp370", "ssp434", "ssp534-over", "ssp585"], "ssp119");
+    config.add_heading("Species");
+    config.add_value("radioMultilineSpecies", "Radio Scenario", "radiobutton", ["CO2", "CH4", "N2O"], "CO2");
 
     config.instantiate(configParent); // instantiate on the web page
-
 
     const graphElement = document.getElementById('multi-line-graph');
     const graph = new OverlayedLineGraph(graphElement, config);
     await graph.init();
-    graph.render();
+    setTimeout(() => {
+        graph.render();
+    }, 5000);
+    document.getElementById("radio-radioMultilineScenario-option-0").attr("checked",true);
 }
 
 async function setupRibbonGraph(): void {
     // Create config for ribbon graph
     const configParent = document.getElementById("config-3-parent");
-    const config = new Config(2);
+    const config = new Config(3);
 
     config.add_heading("SSP Scenario");
     config.add_value("radioScenario", "Radio Scenario", "radiobutton", ["ssp119", "ssp126", "ssp245", "ssp370", "ssp434", "ssp534-over", "ssp585"], "ssp126");
