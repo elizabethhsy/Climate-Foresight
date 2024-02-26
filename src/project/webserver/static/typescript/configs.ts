@@ -81,7 +81,7 @@ class Config extends Object {
                     inputEl.classList.add("mdl-radio__button");
                     inputEl.name = "radio-" + name;
                     inputEl.value = i.toString();
-                    
+
                     if (params[i] === defaultValue) {
                         inputEl.checked = true;
                         this.values[name] = defaultValue;
@@ -146,6 +146,53 @@ class Config extends Object {
                 }
 
                 break;
+            } case "dropdown":{
+                if (typeof(params) == 'undefined')
+                    throw new Error("Must pass list of options when type == 'dropdown'");
+
+                const containerEl = document.createElement("div");
+                containerEl.classList.add("mdl-textfield", "mdl-js-textfield", "mdl-textfield--floating-label");
+
+                const labelEl = document.createElement("label");
+                labelEl.classList.add("mdl-textfield__label");
+                labelEl.htmlFor = "dropdown-" + name;
+                labelEl.innerHTML = label;
+
+                const selectEl = document.createElement("select");
+                selectEl.classList.add("mdl-textfield__input");
+                selectEl.name = selectEl.id = "dropdown-" + name;
+
+                if (typeof(defaultValue) == 'undefined') {
+                    const defaultOption = document.createElement("option");
+                    defaultOption.value = "none";
+                    selectEl.appendChild(defaultOption);
+                    this.values[name] = "none";
+                } else {
+                    this.values[name] = defaultValue;
+                }
+
+                for (let i = 0; i < params.length; i++) {
+                    let inputEl = document.createElement("option");
+                    inputEl.value = inputEl.innerHTML = params[i];
+
+                    if (typeof(defaultValue) != "undefined" && defaultValue == params[i]) {
+                        inputEl.selected = true;
+                    }
+
+                    selectEl.appendChild(inputEl);
+                }
+
+                containerEl.appendChild(selectEl);
+                containerEl.appendChild(labelEl);
+
+                selectEl.oninput = function() {
+                    this_.values[name] = selectEl.value;
+                    this_.notify();
+                }
+
+                this.rootdiv.appendChild(containerEl);
+
+                break;
             } default:
                 throw new Error("Type <" + type + "> not recognised.");
         }
@@ -165,5 +212,5 @@ class Config extends Object {
     public notify() {
         this.listeners.forEach(listener => listener());
     }
-    
+
 }
