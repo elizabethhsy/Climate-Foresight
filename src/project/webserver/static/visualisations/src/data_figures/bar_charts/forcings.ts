@@ -13,6 +13,6 @@ async function createBarChart() {
     // Create bar chart
     const graphElement = document.getElementById('chart');
     const plotlyGraph = new BarChart(graphElement);
-    plotlyGraph.prepareData(data);
-    plotlyGraph.create();
+    plotlyGraph.init(data);
+    plotlyGraph.render();
 }

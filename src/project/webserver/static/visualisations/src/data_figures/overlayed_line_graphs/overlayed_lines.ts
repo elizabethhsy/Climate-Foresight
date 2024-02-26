@@ -1,4 +1,4 @@
-import { OverlayedLineGraph } from "../templates/overlayed_line_graphs";
+import { OverlayedLineGraph } from "../templates/multi_line_graph";
 
 import data from '../../../../../../../../data/climate/ssp245/clean/pos_generative_rand.json' assert { type: 'json' };
 

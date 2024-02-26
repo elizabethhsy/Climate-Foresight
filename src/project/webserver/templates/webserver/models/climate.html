@@ -4,13 +4,15 @@
 
 {% block head %}
 
-    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.29.1.min.js" charset="utf-8"></script>
 
     {% compress js %}
     <script>var exports = {};</script>
     <script type="text/typescript" src="{% static "visualisations/src/data_figures/templates/figure.ts" %}" />
     <script type="text/typescript" src="{% static "visualisations/src/data_figures/templates/bar_chart.ts" %}" />
-    <script type="text/typescript" src="{% static "visualisations/src/data_figures/bar_charts/forcings.ts" %}" />
+    <script type="text/typescript" src="{% static "visualisations/src/data_figures/templates/multi_line_graph.ts" %}" />
+    <script type="text/typescript" src="{% static "visualisations/src/data_figures/templates/ribbon_graph.ts" %}" />
     <script type="text/typescript" src="{% static "typescript/visualisations/climate.ts" %}" />
     <script type="text/typescript" src="{% static "typescript/configs.ts" %}"/>
     {% endcompress %}
@@ -22,9 +24,7 @@
 {% endblock head %}
 
 {% block onload %}
-{% comment %} setup_config(); {% endcomment %}
-setup_barchart();
-{% comment %} createBarChart(); {% endcomment %}
+setupClimateFigures();
 {% endblock onload %}
 
 {% block content %}
@@ -35,45 +35,34 @@ setup_barchart();
         <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse non venenatis lectus. Vivamus non ante nulla. Fusce sit amet nisl urna. Nunc in dolor condimentum, rhoncus libero gravida, eleifend massa. Donec eu ipsum viverra, sodales massa quis, laoreet arcu. Nulla id ex at dui molestie scelerisque a ac urna. Sed tincidunt purus sed risus cursus iaculis. Donec porttitor convallis tortor ut sollicitudin.
         </p>
-        <p>
-            Aliquam porta, elit sed placerat dapibus, dui orci luctus nibh, ultricies molestie metus quam in nisi. Nulla rhoncus pretium turpis, nec feugiat tortor condimentum sit amet. Vestibulum efficitur pellentesque aliquet. Ut varius, ante vitae tristique consequat, velit nunc pellentesque nunc, sit amet venenatis metus elit in sem. Praesent convallis felis sollicitudin, venenatis neque at, rhoncus ligula. Nunc neque ante, consectetur id lectus a, ornare tempor lorem. Praesent ac purus arcu. Integer erat quam, laoreet quis sagittis et, tempus vitae lacus. Vestibulum porttitor velit ut velit fringilla, nec laoreet lacus rhoncus. Fusce eleifend ullamcorper tellus sit amet blandit. Vestibulum pharetra sed arcu nec posuere. Nulla ac pellentesque lectus. Quisque aliquet turpis quis leo vulputate tempor. Ut viverra sagittis eleifend. Suspendisse placerat ac turpis sed euismod.
-        </p>
     </div>
 
     <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
 
         <div class="mdl-tabs__tab-bar">
-            <a href="#graph1-panel" class="mdl-tabs__tab is-active">Graph 1</a>
-            <a href="#graph2-panel" class="mdl-tabs__tab">Graph 2</a>
-            <a href="#graph3-panel" class="mdl-tabs__tab">Graph 3</a>
+            <a href="#graph1-panel" class="mdl-tabs__tab is-active">Bar Chart</a>
+            <a href="#graph2-panel" class="mdl-tabs__tab">Multi-Line Graph</a>
+            <a href="#graph3-panel" class="mdl-tabs__tab">Ribbon Graph</a>
         </div>
 
         <div class="mdl-tabs__panel is-active" id="graph1-panel">
             <div class="flex-container mdl-grid">
-
-                <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp" id="config-0-parent">
-                    <h4>Options</h4>
-                    <button class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" onclick="test();" id="config-0-test">Test</button>
-                </div>
-
-                <div class="mdl-cell mdl-cell--10-col card mdl-shadow--4dp" id="chart"></div>
-
+                <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp" id="config-1-parent"></div>
+                <div class="mdl-cell mdl-cell--10-col card mdl-shadow--4dp" id="bar-chart"></div>
             </div>
         </div>
 
         <div class="mdl-tabs__panel" id="graph2-panel">
             <div class="flex-container mdl-grid">
-
-                <!-- Content -->
-
+                <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp" id="config-2-parent"></div>
+                <div class="mdl-cell mdl-cell--10-col card mdl-shadow--4dp" id="multi-line-graph"></div>
             </div>
         </div>
 
         <div class="mdl-tabs__panel" id="graph3-panel">
             <div class="flex-container mdl-grid">
-
-                <!-- Content -->
-
+                <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp" id="config-3-parent"></div>
+                <div class="mdl-cell mdl-cell--10-col card mdl-shadow--4dp" id="ribbon-graph"></div>
             </div>
         </div>
 

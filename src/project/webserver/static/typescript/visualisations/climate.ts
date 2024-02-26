@@ -1,49 +1,72 @@
+// Imports need to be commented out for Django to build correctly
 // import {Config} from '../configs'
 
-function setup_config(): void {
-    const configparent = document.getElementById("config-0-parent");
+async function setupBarChart(): void {
+    // Create config for bar chart
+    const configParent = document.getElementById("config-1-parent");
+    const config = new Config(1);
 
-    const config = new Config(0);
-    config.add_value("checkbox0", "Checkbox 0", "checkbox");
-    config.add_value("checkbox1", "Checkbox 1", "checkbox");
+    config.add_heading("SSP Scenario");
+    config.add_value("radioBarChartScenario", "Radio Scenario", "radiobutton", ["ssp119", "ssp126", "ssp245", "ssp370", "ssp434", "ssp534-over", "ssp585"], "ssp119");
+    config.add_heading("Data");
+    config.add_value("radioBarChartMetric", "Radio Metric", "radiobutton", ["forcing", "concentration", "emissions", "airborne emissions"], "forcing");
+    config.add_heading("Species");
+    // config.addCheckboxes("species", [
+    //     {name: "checkboxCO2", label: "CO2", default: true},
+    //     {name: "checkboxCH4", label: "CH4", default: true},
+    //     {name: "checkboxN2O", label: "N2O", default: true}
+    // ])
+    config.add_value("checkboxCO2", "CO2", "checkbox", null, true);
+    config.add_value("checkboxCH4", "CH4", "checkbox", null, true);
+    config.add_value("checkboxN2O", "N2O", "checkbox", null, true);
 
-    config.instantiate(configparent);
-
-    document.getElementById("config-0-test").onclick = function () {
-        alert(
-            "Checkbox 0: " + config.values["checkbox0"] + "\n" +
-            "Checkbox 1: " + config.values["checkbox1"]
-        );
-    }
+    config.instantiate(configParent); // instantiate on the web page
+    
+    // Create bar chart
+    const graphElement = document.getElementById('bar-chart');
+    const barChart = new BarChart(graphElement, config);
+    await barChart.init();
+    barChart.render();
 }
 
-async function setup_barchart(): void {
-    const url = '/api/climate?scenario=ssp126&file=pos_generative';
-    const url_data = await fetch(url);
-    const data = await url_data.json();
+async function setupMultilineGraph(): void {
+    // Create config for multi-line graph
+    const configParent = document.getElementById("config-2-parent");
+    const config = new Config(2);
 
-    const configparent = document.getElementById("config-0-parent");
+    config.add_heading("SSP Scenario");
+    config.add_value("radioScenario", "Radio Scenario", "radiobutton", ["ssp119", "ssp126", "ssp245", "ssp370", "ssp434", "ssp534-over", "ssp585"], "ssp119");
+    // config.add_heading("Data");
+    // config.add_value("radioMetric", "Radio Metric", "radiobutton", ["forcing", "concentration", "emissions", "airborne emissions"], "forcing");
 
-    const config = new Config(0);
-    config.add_value("checkbox0", "Checkbox 0", "checkbox");
-    config.add_value("checkbox1", "Checkbox 1", "checkbox");
-    config.add_value("radio0", "Radio 0", "radiobutton", ["Radio Opt 1", "Radio Opt 2", "Radio Opt 3"]);
-    config.add_value("slider0", "Slider 0", "slider", [0, 100, 5]);
+    config.instantiate(configParent); // instantiate on the web page
 
-    config.instantiate(configparent);
 
-    // Create bar chart
-    const graphElement = document.getElementById('chart');
-    const plotlyGraph = new BarChart(graphElement, config);
-    plotlyGraph.prepareData(data);
-    plotlyGraph.create();
+    const graphElement = document.getElementById('multi-line-graph');
+    const graph = new OverlayedLineGraph(graphElement, config);
+    await graph.init();
+    graph.render();
+}
 
-    document.getElementById("config-0-test").onclick = function () {
-        alert(
-            "Checkbox 0: " + config.values["checkbox0"] + "\n" +
-            "Checkbox 1: " + config.values["checkbox1"] + "\n" +
-            "Radio 0: " + config.values["radio0"] + "\n" +
-            "Slider 0: " + config.values["slider0"]
-        );
-    }
+async function setupRibbonGraph(): void {
+    // Create config for ribbon graph
+    const configParent = document.getElementById("config-3-parent");
+    const config = new Config(2);
+
+    config.add_heading("SSP Scenario");
+    config.add_value("radioScenario", "Radio Scenario", "radiobutton", ["ssp119", "ssp126", "ssp245", "ssp370", "ssp434", "ssp534-over", "ssp585"], "ssp126");
+    // config.add_heading("Data");
+    // config.add_value("radioMetric", "Radio Metric", "radiobutton", ["forcing", "concentration", "emissions", "airborne emissions"], "forcing");
+
+    config.instantiate(configParent); // instantiate on the web page
+    const graphElement = document.getElementById('ribbon-graph');
+    const graph = new RibbonGraph(graphElement, config);
+    await graph.init();
+    graph.render();
+}
+
+async function setupClimateFigures(): void {
+    setupBarChart();
+    setupMultilineGraph();
+    setupRibbonGraph();
 }

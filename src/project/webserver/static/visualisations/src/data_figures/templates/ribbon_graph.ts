@@ -1,16 +1,21 @@
-import { Figure } from './figure';
-import Plotly from 'plotly.js-dist';
+// import { Figure } from './figure';
+// import Plotly from 'plotly.js-dist';
 
-export class PlotlyRibbonGraph extends Figure {
-    private graphData: any[] = [];
+class RibbonGraph extends Figure {
+    private data: any[] = [];
     private layout: any;
     private config: any;
 
-    constructor(DOMElement: HTMLElement) {
-        super(DOMElement);
+    constructor(DOMElement: HTMLElement, config) {
+        super(DOMElement, config);
     }
 
-    public prepareData(data: any): void {
+    public async init(): void {
+
+        const url = `/api/climate?scenario=ssp585&file=pos_generative_rand`;
+        const response = await fetch(url);
+        const data = await response.json();
+
         const numRuns = data["run"][data["run"].length - 1];
 
         for (let r = 1; r <= numRuns; r += 1) {
@@ -19,7 +24,7 @@ export class PlotlyRibbonGraph extends Figure {
             let year = data["year"].slice(start, end);
             let atmosphericTemp = data["atmospheric_temp"].slice(start, end);
 
-            this.graphData.push({
+            this.data.push({
                 name: 'run ' + r,
                 type: 'surface',
                 x: year.map(v => [v, v]),
@@ -31,8 +36,12 @@ export class PlotlyRibbonGraph extends Figure {
             });
         }
     }
+    
+    public async update(render: boolean = true) {
+        return;
+    }
 
-    public create(): void {
+    public render(): void {
         this.layout = {
             title: {
                 text: 'Atmospheric Temperature (1750-2100)',
@@ -72,7 +81,7 @@ export class PlotlyRibbonGraph extends Figure {
             modeBarButtonsToRemove: ['zoom3d', 'pan3d', 'orbitRotation', 'tableRotation', 'resetCameraLastSave3d']
         };
 
-        Plotly.newPlot(this.DOMElement, this.graphData, this.layout, this.config);
+        Plotly.newPlot(this.DOMElement, this.data, this.layout, this.config);
     }
 
 }
