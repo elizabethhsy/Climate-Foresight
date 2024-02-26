@@ -15,8 +15,8 @@ type MetricGraph = {
 const width = 1200;
 const height = 800;
 
-const tooltipWidth = 200;
-const tooltipHeight = 100;
+const tooltipWidth = 100;
+const tooltipHeight = 75;
 const scalingFactor = 10;
 
 const margin = {
@@ -48,7 +48,7 @@ export class OverlayedLineGraph extends Figure {
             run: data["run"][i]
         }))
 
-        // specie_data = specie_data.filter(d => d.run < 100);
+        specie_data = specie_data.filter(d => d.run < 100);
 
         for (var metric of this.metrics) {
             let graph:MetricGraph = {
@@ -79,7 +79,7 @@ export class OverlayedLineGraph extends Figure {
             // Generate unique IDs for each graph
             const chartId = `chart-${graph.metric}`;
             // Create container for each graph
-            const chartContainer = graphContainer.append("div").attr("id", chartId).style("position", "relative").style("width", "50%").style("height", "50%");
+            const chartContainer = graphContainer.append("div").attr("id", chartId).style("position", "relative").style("width", "50%");
 
             // Append the SVG to the chart container
             const svg = chartContainer.append("svg")
@@ -183,43 +183,56 @@ export class OverlayedLineGraph extends Figure {
                     tooltipGraph.attr("transform", `translate(${tooltipWidth/2}, ${tooltipHeight/2})`)
                 })
             
-                function renderZoomedInData(data, point) {
-                    // Remove existing content
-                    tooltipGraph.selectAll("*").remove();
+            function renderZoomedInData(data, point) {
+                // Remove existing content
+                tooltipGraph.selectAll("*").remove();
 
-                    const xDomain = d3.extent(data, d=>d[0]);
-                    const yDomain = d3.extent(data, d=>d[1]);
-                    
-                    var miniXScale = d3.scaleLinear()
-                        .domain(xDomain)
-                        .range([0, tooltipWidth]);
+                const xDomain = d3.extent(data, d=>d[0]);
+                const yDomain = d3.extent(data, d=>d[1]);
 
-                    const miniYScale = d3.scaleLinear()
-                        .domain(yDomain)
-                        .range([0, tooltipHeight]);
+                var miniXScale = d3.scaleLinear()
+                    .domain(xDomain)
+                    .range([0, tooltipWidth]);
 
-                    const scaledData = data.map(d => {
-                        const x = miniXScale(d[0]);
-                        const y = miniYScale(d[1]);
-                        const run = d[2];
-                        return [x, y, run];
-                    })
-                    const groupedData = d3.rollup(scaledData, v => Object.assign(v, {z: v[0][2]}), d => d[2]);
+                const miniYScale = d3.scaleLinear()
+                    .domain(yDomain)
+                    .range([tooltipHeight, 0]);
 
-                    const line = d3.line();
-                    tooltipGraph.selectAll("path")
-                        .data(groupedData.values()) // Convert Map values to array of arrays
-                        .enter()
-                        .append("path")
-                        .attr("fill", "none")
-                        .attr("stroke", "steelblue")
-                        .attr("stroke-width", 1.5)
-                        .attr("stroke-linejoin", "round")
-                        .attr("stroke-linecap", "round")
-                        .attr("stroke-opacity", 0.1)
-                        .style("mix-blend-mode", "multiply")
-                        .attr("d", line);
-                }
+                const scaledData = data.map(d => {
+                    const x = miniXScale(d[0]);
+                    const y = tooltipHeight - miniYScale(d[1]);
+                    const run = d[2];
+                    return [x, y, run];
+                })
+                const groupedData = d3.rollup(scaledData, v => Object.assign(v, {z: v[0][2]}), d => d[2]);
+
+                // console.log(miniXScale.domain(), miniXScale.range(), miniYScale.domain(), miniYScale.range());
+
+                // // Add the horizontal axis.
+                // tooltip.append("g")
+                // .attr("transform", `translate(0,${tooltipHeight})`)
+                // .call(d3.axisBottom(miniXScale).ticks(5).tickSizeOuter(0));
+
+                // // Add the vertical axis.
+                // tooltip.append("g")
+                //     .attr("transform", `translate(0,0)`)
+                //     .call(d3.axisLeft(miniYScale).ticks(5))
+                //     .call(g => g.select(".domain").remove())
+
+                const line = d3.line();
+                tooltipGraph.selectAll("path")
+                    .data(groupedData.values()) // Convert Map values to array of arrays
+                    .enter()
+                    .append("path")
+                    .attr("fill", "none")
+                    .attr("stroke", "steelblue")
+                    .attr("stroke-width", 1.5)
+                    .attr("stroke-linejoin", "round")
+                    .attr("stroke-linecap", "round")
+                    .attr("stroke-opacity", 0.1)
+                    .style("mix-blend-mode", "multiply")
+                    .attr("d", line);
+            }
         })
 
         const end = Date.now();
