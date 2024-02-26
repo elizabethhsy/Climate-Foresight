@@ -1,5 +1,5 @@
-// import * as d3 from "d3";
-// import { Figure } from './figure';
+import * as d3 from "d3";
+import { Figure } from './figure';
 
 type MetricGraph = {
     metric: string,
@@ -20,24 +20,23 @@ const margin = {
     bottom: 50,
     left: 40
 }
-const tooltipRadius = 100;
+const tooltipRadius = 50;
+const scalingFactor = 10;
 
-class OverlayedLineGraph extends Figure {
+export class OverlayedLineGraph extends Figure {
     private layout: any;
     private config: any;
     private metrics = ["emissions", "airborne_emissions", "concentration", "forcing"]
     private metricGraphs: MetricGraph[] = [];
 
-    constructor(DOMElement: HTMLElement, config) {
-        super(DOMElement, config);
+    constructor(DOMElement: HTMLElement) {
+        super(DOMElement);
     }
 
-    public async init(): void {
+    public prepareData(data: any): void {
         const start = Date.now();
-        const data = await this.getDataForScenario("ssp245");
-
         const sp = "CO2";
-        const specie_data = data["year"].map((year, i) => ({
+        var specie_data = data["year"].map((year, i) => ({
             year: year,
             emissions: data[sp.concat("_emissions") as keyof typeof data][i],
             airborne_emissions: data[sp.concat("_airborne_emissions") as keyof typeof data][i],
@@ -45,6 +44,8 @@ class OverlayedLineGraph extends Figure {
             forcing: data[sp.concat("_forcing") as keyof typeof data][i],
             run: data["run"][i]
         }))
+
+        specie_data = specie_data.filter(d => d.run < 100);
 
         for (var metric of this.metrics) {
             let graph:MetricGraph = {
@@ -63,23 +64,12 @@ class OverlayedLineGraph extends Figure {
         console.log(end-start);
     }
 
-    private async getDataForScenario(scenario: string): void {
-        const url = `/api/climate?scenario=${scenario}&file=pos_generative_rand`;
-        const response = await fetch(url);
-        const data = await response.json();
-        return data;
-    }
-
-    public update() {
-        return;
-    }
-
-    public render(): void {
+    public create(): void {
         const start = Date.now();
         const sp = "CO2";
 
         // Create container for the screen
-        const graphContainer = d3.select("#multi-line-graph").style("display", "flex").style("flex-wrap", "wrap");
+        const graphContainer = d3.select("#graph").style("display", "flex").style("flex-wrap", "wrap");
 
         this.metricGraphs.forEach(graph => {
             console.log(graph);
@@ -110,10 +100,15 @@ class OverlayedLineGraph extends Figure {
             const scaled_y = graph.y.map(v => y(v));
 
             const points = scaled_x.map(function(e, i) {
-                return [e, scaled_y[i], graph.run[i]];
+                const x = e;
+                const y = scaled_y[i];
+                const run = graph.run[i];
+                return [x, y, run];
             });
 
             const groups = d3.rollup(points, v => Object.assign(v, {z: v[0][2]}), d => d[2]);
+            console.log("groups");
+            console.log(groups);
             const delaunay = d3.Delaunay.from(points);
 
             graph.points = points;
@@ -156,12 +151,16 @@ class OverlayedLineGraph extends Figure {
 
             tooltip.append("circle")
                 .attr("r", tooltipRadius)
-                .attr("fill", "rgba(255, 255, 255, 0.8)")
+                .attr("fill", "rgba(255, 255, 255, 1)")
                 .attr("stroke", "black");
 
             tooltip.append("text")
                 .attr("text-anchor", "middle")
                 .attr("y", -8);
+
+            const tooltipGraph = tooltip.append("svg")
+                .attr("width", tooltipRadius)
+                .attr("height", tooltipRadius);
             
             svg
                 .on("click", (event) => {
@@ -170,10 +169,51 @@ class OverlayedLineGraph extends Figure {
                     console.log("%d, %d", mx, my);
                     const i = graph.delaunay.find(mx, my);
                     console.log(i);
-                    const [x, y, k] = points[i]
-                    tooltip.attr("transform", `translate(${x},${y})`);
+                    const p = points[i]
+                    console.log(points[i]);
+                    tooltip.attr("transform", `translate(${p[0]},${p[1]})`);
                     tooltip.attr("display", null);
+
+                    const zoomedInData = this.getZoomedInData(points, points[i]);
+                    renderZoomedInData(zoomedInData);
                 })
+            
+                function renderZoomedInData(data) {
+                    // Remove existing content
+                    tooltipGraph.selectAll("*").remove();
+
+                    const xDomain = d3.extent(data, d=>d[0]);
+                    const yDomain = d3.extent(data, d=>d[1]);
+
+                    const xScale = d3.scaleLinear()
+                        .domain(xDomain)
+                        .range([-tooltipRadius, tooltipRadius]); // Full circle in radians
+
+                    const yScale = d3.scaleLinear()
+                        .domain(yDomain)
+                        .range([tooltipRadius, -tooltipRadius]); // Radius of the circle
+                        
+                    const scaledData = data.map(d => {
+                        const x = xScale(d[0]);
+                        const y = yScale(d[1]);
+                        const run = d[2];
+                        return [x, y, run];
+                    })
+                    const groupedData = d3.rollup(scaledData, v => Object.assign(v, {z: v[0][2]}), d => d[2]);
+
+                    const line = d3.line();
+                    tooltipGraph.selectAll("path")
+                        .data(groupedData.values()) // Convert Map values to array of arrays
+                        .enter()
+                        .append("path")
+                        .attr("fill", "none")
+                        .attr("stroke", "steelblue")
+                        .attr("stroke-width", 1.5)
+                        .attr("stroke-linejoin", "round")
+                        .attr("stroke-linecap", "round")
+                        .attr("stroke-opacity", 0.1)
+                        .attr("d", line);
+                }
         })
 
         const end = Date.now();
@@ -195,5 +235,13 @@ class OverlayedLineGraph extends Figure {
                 return d.forcing;
         }
         return;
+    }
+
+    private getZoomedInData(points, point):any {
+        console.log(points);
+        console.log(point[0]);
+        let coordinates = points.filter(v => (Math.sqrt(Math.pow(Math.abs(v[0]-point[0]),2) +  Math.pow(Math.abs(v[1]-point[1]), 2)) <= (tooltipRadius)));
+        console.log(coordinates);
+        return coordinates;
     }
 }
