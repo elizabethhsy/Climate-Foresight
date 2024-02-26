@@ -7,9 +7,9 @@ async function setupBarChart(): void {
     const config = new Config(1);
 
     config.add_heading("SSP Scenario");
-    config.add_value("radioBarChartScenario", "Radio Scenario", "radiobutton", ["ssp119", "ssp126", "ssp245", "ssp370", "ssp434", "ssp534-over", "ssp585"], "ssp119");
+    config.add_value("radioBarChartScenario", "Scenario", "dropdown", ["ssp119", "ssp126", "ssp245", "ssp370", "ssp434", "ssp534-over", "ssp585"], "ssp119");
     config.add_heading("Data");
-    config.add_value("radioBarChartMetric", "Radio Metric", "radiobutton", ["forcing", "concentration", "emissions", "airborne emissions"], "forcing");
+    config.add_value("radioBarChartMetric", "Metric", "dropdown", ["forcing", "concentration", "emissions", "airborne emissions"], "forcing");
     config.add_heading("Species");
     // config.addCheckboxes("species", [
     //     {name: "checkboxCO2", label: "CO2", default: true},
@@ -21,7 +21,7 @@ async function setupBarChart(): void {
     config.add_value("checkboxN2O", "N2O", "checkbox", null, true);
 
     config.instantiate(configParent); // instantiate on the web page
-    
+
     // Create bar chart
     const graphElement = document.getElementById('bar-chart');
     const barChart = new BarChart(graphElement, config);
