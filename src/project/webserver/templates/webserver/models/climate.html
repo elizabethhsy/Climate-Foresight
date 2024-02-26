@@ -17,6 +17,10 @@
     <script type="text/typescript" src="{% static "typescript/configs.ts" %}"/>
     {% endcompress %}
 
+    {% compress css %}
+    <link rel="stylesheet" type="text/x-scss" href="{% static "stylesheets/configs.scss" %}" />
+    {% endcompress %}
+
 {% endblock head %}
 
 {% block onload %}

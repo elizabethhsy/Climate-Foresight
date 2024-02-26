@@ -59,8 +59,6 @@ async function setupRibbonGraph(): void {
     // config.add_value("radioMetric", "Radio Metric", "radiobutton", ["forcing", "concentration", "emissions", "airborne emissions"], "forcing");
 
     config.instantiate(configParent); // instantiate on the web page
-
-
     const graphElement = document.getElementById('ribbon-graph');
     const graph = new RibbonGraph(graphElement, config);
     await graph.init();
