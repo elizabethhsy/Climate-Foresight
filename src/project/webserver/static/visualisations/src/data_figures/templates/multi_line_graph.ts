@@ -41,13 +41,49 @@ class OverlayedLineGraph extends Figure {
     }
 
     public async init(): void {
-        this.update(true);
+        this.specie = this.config.values["radioMultilineSpecies"];
+        this.scenario = this.config.values["radioMultilineScenario"];
+        console.log("species: ", this.specie);
+        console.log("scenario: ", this.scenario);
+
+        this.metricGraphs = [];
+
+        const url = `/api/climate?scenario=${this.scenario}&file=pos_generative_rand`;
+        const response = await fetch(url);
+        const data = await response.json();
+        // console.log(data);
+
+        var specie_data = data["year"].map((year, i) => ({
+            year: year,
+            emissions: data[this.specie.concat("_emissions") as keyof typeof data][i],
+            airborne_emissions: data[this.specie.concat("_airborne_emissions") as keyof typeof data][i],
+            concentration:data[this.specie.concat("_concentration") as keyof typeof data][i],
+            forcing: data[this.specie.concat("_forcing") as keyof typeof data][i],
+            run: data["run"][i]
+        }))
+
+        specie_data = specie_data.filter(d => d.run < 100);
+
+        for (var metric of this.metrics) {
+            let graph:MetricGraph = {
+                specie: this.specie,
+                scenario: this.scenario,
+                metric: metric,
+                delaunay: null,
+                points: null,
+                groups: null,
+                x: specie_data.map((d)=>d.year),
+                y: specie_data.map((d)=>this.getMetric(d, metric)),
+                run: specie_data.map((d)=>d.run)
+            }
+            this.metricGraphs.push(graph);
+        }
         return;
     }
 
     public async update(render: boolean = true) {
-        this.specie = this.config.values["radioSpecies"];
-        this.scenario = this.config.values["radioScenario"];
+        this.specie = this.config.values["radioMultilineSpecies"];
+        this.scenario = this.config.values["radioMultilineScenario"];
         console.log("species: ", this.specie);
         console.log("scenario: ", this.scenario);
 
