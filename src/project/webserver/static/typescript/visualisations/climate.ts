@@ -62,6 +62,6 @@ async function setupRibbonGraph(): void {
 
 async function setupClimateFigures(): void {
     setupBarChart();
-    setupMultilineGraph();
-    setupRibbonGraph();
+    // setupMultilineGraph();
+    // setupRibbonGraph();
 }
