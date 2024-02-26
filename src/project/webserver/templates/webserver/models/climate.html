@@ -5,12 +5,14 @@
 {% block head %}
 
     <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.29.1.min.js" charset="utf-8"></script>
 
     {% compress js %}
     <script>var exports = {};</script>
     <script type="text/typescript" src="{% static "visualisations/src/data_figures/templates/figure.ts" %}" />
     <script type="text/typescript" src="{% static "visualisations/src/data_figures/templates/bar_chart.ts" %}" />
     <script type="text/typescript" src="{% static "visualisations/src/data_figures/templates/multi_line_graph.ts" %}" />
+    <script type="text/typescript" src="{% static "visualisations/src/data_figures/templates/ribbon_graph.ts" %}" />
     <script type="text/typescript" src="{% static "typescript/visualisations/climate.ts" %}" />
     <script type="text/typescript" src="{% static "typescript/configs.ts" %}"/>
     {% endcompress %}
@@ -41,37 +43,22 @@ setupClimateFigures();
 
         <div class="mdl-tabs__panel is-active" id="graph1-panel">
             <div class="flex-container mdl-grid">
-                
-                <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp" id="config-1-parent">
-                </div>
-
+                <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp" id="config-1-parent"></div>
                 <div class="mdl-cell mdl-cell--10-col card mdl-shadow--4dp" id="bar-chart"></div>
-
             </div>
         </div>
 
         <div class="mdl-tabs__panel" id="graph2-panel">
             <div class="flex-container mdl-grid">
-
-                <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp" id="config-2-parent">
-                    <h4>SSP Scenario</h4>
-                </div>
-
+                <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp" id="config-2-parent"></div>
                 <div class="mdl-cell mdl-cell--10-col card mdl-shadow--4dp" id="multi-line-graph"></div>
-
             </div>
         </div>
 
         <div class="mdl-tabs__panel" id="graph3-panel">
             <div class="flex-container mdl-grid">
-
-                <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp" id="config-2-parent">
-                    <h4>SSP Scenario</h4>
-                </div>
-
-
+                <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp" id="config-3-parent"></div>
                 <div class="mdl-cell mdl-cell--10-col card mdl-shadow--4dp" id="ribbon-graph"></div>
-
             </div>
         </div>
 

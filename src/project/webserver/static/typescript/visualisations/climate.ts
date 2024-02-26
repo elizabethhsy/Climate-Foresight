@@ -7,9 +7,18 @@ async function setupBarChart(): void {
     const config = new Config(1);
 
     config.add_heading("SSP Scenario");
-    config.add_value("radioScenario", "Radio Scenario", "radiobutton", ["ssp119", "ssp126", "ssp245", "ssp370", "ssp434", "ssp534-over", "ssp585"], "ssp119");
+    config.add_value("radioBarChartScenario", "Radio Scenario", "radiobutton", ["ssp119", "ssp126", "ssp245", "ssp370", "ssp434", "ssp534-over", "ssp585"], "ssp119");
     config.add_heading("Data");
-    config.add_value("radioMetric", "Radio Metric", "radiobutton", ["forcing", "concentration", "emissions", "airborne emissions"], "forcing");
+    config.add_value("radioBarChartMetric", "Radio Metric", "radiobutton", ["forcing", "concentration", "emissions", "airborne emissions"], "forcing");
+    config.add_heading("Species");
+    // config.addCheckboxes("species", [
+    //     {name: "checkboxCO2", label: "CO2", default: true},
+    //     {name: "checkboxCH4", label: "CH4", default: true},
+    //     {name: "checkboxN2O", label: "N2O", default: true}
+    // ])
+    config.add_value("checkboxCO2", "CO2", "checkbox", null, true);
+    config.add_value("checkboxCH4", "CH4", "checkbox", null, true);
+    config.add_value("checkboxN2O", "N2O", "checkbox", null, true);
 
     config.instantiate(configParent); // instantiate on the web page
     
@@ -40,7 +49,22 @@ async function setupMultilineGraph(): void {
 }
 
 async function setupRibbonGraph(): void {
-    // TODO
+    // Create config for ribbon graph
+    const configParent = document.getElementById("config-3-parent");
+    const config = new Config(2);
+
+    config.add_heading("SSP Scenario");
+    config.add_value("radioScenario", "Radio Scenario", "radiobutton", ["ssp119", "ssp126", "ssp245", "ssp370", "ssp434", "ssp534-over", "ssp585"], "ssp119");
+    // config.add_heading("Data");
+    // config.add_value("radioMetric", "Radio Metric", "radiobutton", ["forcing", "concentration", "emissions", "airborne emissions"], "forcing");
+
+    config.instantiate(configParent); // instantiate on the web page
+
+
+    const graphElement = document.getElementById('ribbon-graph');
+    const graph = new RibbonGraph(graphElement, config);
+    await graph.init();
+    graph.render();
 }
 
 async function setupClimateFigures(): void {
