@@ -74,9 +74,10 @@ JS Visualization Libraries
 ## Current API
 - Climate:
     - `GET /api/climate?scenario=XXX[&file=YYY]`<br>
-        - `scenario`: one of `['ssp119', 'ssp126', 'ssp245', 'ssp370', 'ssp434', 'ssp460', 'ssp534-over', 'ssp585']`[(described here)](https://github.com/elizabethhsy/Climate-Foresight/tree/plotly?tab=readme-ov-file#ssp-rcp-scenarios).<br>
-        - `file`: one of `['true_generative', 'pos_generative', 'pos_generative_rand', 'prior_generative_rand', 'prior_generative', 'param_covariances']` [(described here)](https://github.com/elizabethhsy/Climate-Foresight/tree/plotly?tab=readme-ov-file#embecosm-dcm). Default: `pos_generative_rand`.
+        - `scenario`: one of `['ssp119', 'ssp126', 'ssp245', 'ssp370', 'ssp434', 'ssp460', 'ssp534-over', 'ssp585']` (See above for what these mean).<br>
+        - `file`: one of `['true_generative', 'pos_generative', 'pos_generative_rand', 'prior_generative_rand']` (See above for what these mean). Default: `pos_generative_rand`.
 
 - 3body: This is expected to undergo significant changes, since the 3body team hasn't gotten back to me just yet...
     - `GET /api/3body?x=XXX`<br>
     where `x` is the noise introduced to `default_prior_expectations`. 
+    Possible `x` values are `['0.00', '0.01', '0.02', '0.03', '0.04', '0.05', '0.06', '0.07']`.
