@@ -50,15 +50,17 @@ async function setupRibbonGraph(): void {
     const config = new Config(3);
 
     config.add_heading("Data");
-    config.add_value("radioMetric", "Radio Metric", "radiobutton", ["forcing", "concentration", "emissions", "airborne emissions"], "forcing");
-    config.add_heading("");
-    config.add_heading("");
-    config.add_heading("");
-    config.add_heading("");
-    config.add_heading("");
-    config.add_heading("");
-    config.add_heading("");
-    config.add_heading("");
+    config.add_value("radioRibbonMetric", "Radio Metric", "radiobutton", ["temperature", "forcing", "concentration", "emissions", "airborne emissions"], "temperature");
+    config.add_heading("Scenarios");
+    config.add_value("checkboxSSP119", "ssp119", "checkbox", null, true);
+    config.add_value("checkboxSSP126", "ssp126", "checkbox", null, true);
+    config.add_value("checkboxSSP245", "ssp245", "checkbox", null, true);
+    config.add_value("checkboxSSP370", "ssp370", "checkbox", null, true);
+    config.add_value("checkboxSSP434", "ssp434", "checkbox", null, true);
+    config.add_value("checkboxSSP534-over", "ssp534-over", "checkbox", null, true);
+    config.add_value("checkboxSSP585", "ssp585", "checkbox", null, true);
+    config.add_heading("Placeholder 1");
+    config.add_heading("Placeholder 2");
 
     config.instantiate(configParent); // instantiate on the web page
     const graphElement = document.getElementById('ribbon-graph');

@@ -52,11 +52,13 @@ class RibbonGraph extends Figure {
                 yref: 'paper',
                 y: 0.95
             },
-            autosize: true,
+            autosize: false,
+            width: 800,
+            height: 700,
             scene: {
                 xaxis: { title: 'Year', showgrid: true, zeroline: true, autorange: 'reversed' },
                 yaxis: { title: 'Run', showgrid: false, zeroline: true },
-                zaxis: { title: 'Atmospheric Temperature', showgrid: true, zeroline: true }
+                zaxis: { title: 'Atmospheric Temperature', showgrid: true, zeroline: true },
             },
             showlegend: true,
             legend: {
@@ -66,7 +68,7 @@ class RibbonGraph extends Figure {
                 y: 0.5,
                 yanchor: 'middle'
             },
-            margin: { l: 0, r: 0, b: 0, t: 0 }
+            margin: { l: 100, r: 0, b: 0, t: 40 }
         };
 
         this.config = {
