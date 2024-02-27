@@ -1,7 +1,7 @@
 class Config extends Object {
     private rootdiv: HTMLElement;
 
-    private values: Object = {};
+    values: Object = {};
     private ids: Object = {};
 
     private number: number;

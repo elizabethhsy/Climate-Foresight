@@ -103,7 +103,7 @@ function createTrailParticleSystem(trailColor, scene, particleSystems) {
   particleSystems.push(particleSystem);
 }
 
-async function setupConfig(div: string): Config{
+function setupConfig(div: string): Config{
   // Create config for bar chart
   const configParent = document.getElementById(div);
   const config = new Config(99);
@@ -138,7 +138,7 @@ export async function ThreeBodyAnimation(div: string, configdiv: string){
   const axesHelper = new THREE.AxesHelper(20); // Adjust the size of the axes as needed
   scene.add(axesHelper);
   //add labels
-  for(let i = -5; i <= 5 ; i++){ 
+  for(let i = -5; i <= 5 ; i++){
     createTextLabel(scene, `${i}`, new THREE.Vector3(i, 0, 0)); // Example position for X-axis label
     createTextLabel(scene, `${i}`, new THREE.Vector3(0, i, 0)); // Example position for Y-axis label
     createTextLabel(scene, `${i}`, new THREE.Vector3(0, 0, i)); // Example position for Z-axis label
@@ -244,7 +244,7 @@ export async function ThreeBodyAnimation(div: string, configdiv: string){
     }
     for(let i = 0; i < numFiles ; i++){
       const index = i * 3;
-      const checked = config.value['checkbox' + `${i}`];
+      const checked = config.values['checkbox' + `${i}`];
       // Toggle the visibility of the spheres associated with the pressed key
       for (let i = index; i < index + 3; i++) {
         const sphere_on = spheres_on[i];
