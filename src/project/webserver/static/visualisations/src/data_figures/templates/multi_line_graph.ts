@@ -61,18 +61,20 @@ class OverlayedLineGraph extends Figure {
 
     public async init(): void {
         this.subGraphs = [];
-
+        var url: string;
         if (this.temperature_graph) {
             console.log("is temperature graph");
             this.scenario = this.config.values["radioTemperatureScenario"];
             scalingFactor = 5;
+            url = `/api/climate2/${this.scenario}/temps/temps.json`;
         } else {
             console.log("is species graph");
             this.scenario = this.config.values["radioMultilineScenario"];
+            this.specie = this.config.values["radioMultilineSpecies"];
+            console.log("species: ", this.specie);
+            url = `/api/climate2/${this.scenario}/species/${this.specie}.json`;
         }
-
-        console.log("scenario: ", this.scenario);
-        const url = `/api/climate?scenario=${this.scenario}&file=pos_generative_rand`;
+        
         const response = await fetch(url);
         const data = await response.json();
         // console.log(data);
@@ -101,9 +103,6 @@ class OverlayedLineGraph extends Figure {
                 this.subGraphs.push(graph);
             }
         } else {
-            this.specie = this.config.values["radioMultilineSpecies"];
-            console.log("species: ", this.specie);
-
             var specie_data = data["year"].map((year, i) => ({
                 year: year,
                 emissions: data[this.specie.concat("_emissions") as keyof typeof data][i],
@@ -136,16 +135,19 @@ class OverlayedLineGraph extends Figure {
     public async update(render: boolean = true) {
         this.subGraphs = [];
 
+        var url: string;
         if (this.temperature_graph) {
             console.log("is temperature graph");
             this.scenario = this.config.values["radioTemperatureScenario"];
+            url = `/api/climate2/${this.scenario}/temps/temps.json`;
         } else {
             console.log("is species graph");
             this.scenario = this.config.values["radioMultilineScenario"];
+            this.specie = this.config.values["radioMultilineSpecies"];
+            console.log("species: ", this.specie);
+            url = `/api/climate2/${this.scenario}/species/${this.specie}.json`;
         }
-
-        console.log("scenario: ", this.scenario);
-        const url = `/api/climate?scenario=${this.scenario}&file=pos_generative_rand`;
+        
         const response = await fetch(url);
         const data = await response.json();
         // console.log(data);
@@ -174,9 +176,6 @@ class OverlayedLineGraph extends Figure {
                 this.subGraphs.push(graph);
             }
         } else {
-            this.specie = this.config.values["radioMultilineSpecies"];
-            console.log("species: ", this.specie);
-
             var specie_data = data["year"].map((year, i) => ({
                 year: year,
                 emissions: data[this.specie.concat("_emissions") as keyof typeof data][i],
