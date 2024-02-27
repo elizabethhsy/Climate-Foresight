@@ -182,8 +182,8 @@ export async function ThreeBodyAnimation(div) {
     document.addEventListener('mousemove', function (event) {
         // Get the mouse position relative to the renderer's DOM element
         var rect = renderer.domElement.getBoundingClientRect();
-        const mouseX = event.clientX;
-        const mouseY = event.clientY;
+        const mouseX = event.clientX - rect.left;
+        const mouseY = event.clientY - rect.top;
         // Convert mouse coordinates to normalized device coordinates (NDC)
         mouseNDC.x = (mouseX / rect.width) * 2 - 1;
         mouseNDC.y = -(mouseY / rect.height) * 2 + 1;
