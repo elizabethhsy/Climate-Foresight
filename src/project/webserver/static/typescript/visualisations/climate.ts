@@ -49,10 +49,16 @@ async function setupRibbonGraph(): void {
     const configParent = document.getElementById("config-3-parent");
     const config = new Config(3);
 
-    config.add_heading("SSP Scenario");
-    config.add_value("radioScenario", "Radio Scenario", "radiobutton", ["ssp119", "ssp126", "ssp245", "ssp370", "ssp434", "ssp534-over", "ssp585"], "ssp126");
-    // config.add_heading("Data");
-    // config.add_value("radioMetric", "Radio Metric", "radiobutton", ["forcing", "concentration", "emissions", "airborne emissions"], "forcing");
+    config.add_heading("Data");
+    config.add_value("radioMetric", "Radio Metric", "radiobutton", ["forcing", "concentration", "emissions", "airborne emissions"], "forcing");
+    config.add_heading("");
+    config.add_heading("");
+    config.add_heading("");
+    config.add_heading("");
+    config.add_heading("");
+    config.add_heading("");
+    config.add_heading("");
+    config.add_heading("");
 
     config.instantiate(configParent); // instantiate on the web page
     const graphElement = document.getElementById('ribbon-graph');
