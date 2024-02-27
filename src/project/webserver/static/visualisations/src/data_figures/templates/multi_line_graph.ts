@@ -1,10 +1,25 @@
 // import * as d3 from "d3";
 // import { Figure } from './figure';
 
+type SubGraph =
+    |MetricGraph
+    |TemperatureGraph
+
 type MetricGraph = {
     specie: string,
     scenario: string,
     metric: string,
+    delaunay: any,
+    points: any,
+    groups: any,
+    x: any,
+    y: any,
+    run: any
+}
+
+type TemperatureGraph = {
+    scenario: string,
+    layer: string,
     delaunay: any,
     points: any,
     groups: any,
@@ -19,7 +34,7 @@ const height = 800;
 
 const tooltipWidth = 100;
 const tooltipHeight = 75;
-const scalingFactor = 10;
+var scalingFactor = 10;
 
 const margin = {
     top: tooltipHeight/2,
@@ -28,96 +43,165 @@ const margin = {
     left: 40
 }
 
+const metrics = ["emissions", "airborne_emissions", "concentration", "forcing"];
+const layers = ["atmospheric_temp", "sea_layer1_temp", "sea_layer2_temp", "sea_layer3_temp"]
+
 class OverlayedLineGraph extends Figure {
-    private metrics = ["emissions", "airborne_emissions", "concentration", "forcing"]
-    private metricGraphs: MetricGraph[] = [];
+    private temperature_graph: boolean;
+    private subGraphs: SubGraph[] = [];
     private specie: string;
     private scenario: string;
 
-    constructor(DOMElement: HTMLElement, config) {
+    constructor(DOMElement: HTMLElement, config, temperature:boolean = false) {
         super(DOMElement, config);
         this.scenario = "ssp119";
         this.specie = "CO2";
+        this.temperature_graph = temperature;
     }
 
     public async init(): void {
-        this.specie = this.config.values["radioMultilineSpecies"];
-        this.scenario = this.config.values["radioMultilineScenario"];
-        console.log("species: ", this.specie);
+        this.subGraphs = [];
+
+        if (this.temperature_graph) {
+            console.log("is temperature graph");
+            this.scenario = this.config.values["radioTemperatureScenario"];
+            scalingFactor = 5;
+        } else {
+            console.log("is species graph");
+            this.scenario = this.config.values["radioMultilineScenario"];
+        }
+
         console.log("scenario: ", this.scenario);
-
-        this.metricGraphs = [];
-
         const url = `/api/climate?scenario=${this.scenario}&file=pos_generative_rand`;
         const response = await fetch(url);
         const data = await response.json();
         // console.log(data);
 
-        var specie_data = data["year"].map((year, i) => ({
-            year: year,
-            emissions: data[this.specie.concat("_emissions") as keyof typeof data][i],
-            airborne_emissions: data[this.specie.concat("_airborne_emissions") as keyof typeof data][i],
-            concentration:data[this.specie.concat("_concentration") as keyof typeof data][i],
-            forcing: data[this.specie.concat("_forcing") as keyof typeof data][i],
-            run: data["run"][i]
-        }))
+        if (this.temperature_graph == true) {
+            var temperature_data = data["year"].map((year, i) => ({
+                year: year,
+                atmospheric_temp: data["atmospheric_temp" as keyof typeof data][i],
+                sea_layer1_temp: data["sea_layer1_temp" as keyof typeof data][i],
+                sea_layer2_temp: data["sea_layer2_temp" as keyof typeof data][i],
+                sea_layer3_temp: data["sea_layer3_temp" as keyof typeof data][i],
+                run: data["run"][i]
+            }))
 
-        specie_data = specie_data.filter(d => d.run < 100);
-
-        for (var metric of this.metrics) {
-            let graph:MetricGraph = {
-                specie: this.specie,
-                scenario: this.scenario,
-                metric: metric,
-                delaunay: null,
-                points: null,
-                groups: null,
-                x: specie_data.map((d)=>d.year),
-                y: specie_data.map((d)=>this.getMetric(d, metric)),
-                run: specie_data.map((d)=>d.run)
+            for (var layer of layers) {
+                let graph:TemperatureGraph = {
+                    scenario: this.scenario,
+                    layer: layer,
+                    delaunay: null,
+                    points: null,
+                    groups: null,
+                    x: temperature_data.map((d)=>d.year),
+                    y: temperature_data.map((d)=>this.getLayer(d, layer)),
+                    run: temperature_data.map((d)=>d.run)
+                }
+                this.subGraphs.push(graph);
             }
-            this.metricGraphs.push(graph);
+        } else {
+            this.specie = this.config.values["radioMultilineSpecies"];
+            console.log("species: ", this.specie);
+
+            var specie_data = data["year"].map((year, i) => ({
+                year: year,
+                emissions: data[this.specie.concat("_emissions") as keyof typeof data][i],
+                airborne_emissions: data[this.specie.concat("_airborne_emissions") as keyof typeof data][i],
+                concentration:data[this.specie.concat("_concentration") as keyof typeof data][i],
+                forcing: data[this.specie.concat("_forcing") as keyof typeof data][i],
+                run: data["run"][i]
+            }))
+
+            specie_data = specie_data.filter(d => d.run < 100);
+
+            for (var metric of metrics) {
+                let graph:MetricGraph = {
+                    specie: this.specie,
+                    scenario: this.scenario,
+                    metric: metric,
+                    delaunay: null,
+                    points: null,
+                    groups: null,
+                    x: specie_data.map((d)=>d.year),
+                    y: specie_data.map((d)=>this.getMetric(d, metric)),
+                    run: specie_data.map((d)=>d.run)
+                }
+                this.subGraphs.push(graph);
+            }
         }
         return;
     }
 
     public async update(render: boolean = true) {
-        this.specie = this.config.values["radioMultilineSpecies"];
-        this.scenario = this.config.values["radioMultilineScenario"];
-        console.log("species: ", this.specie);
+        this.subGraphs = [];
+
+        if (this.temperature_graph) {
+            console.log("is temperature graph");
+            this.scenario = this.config.values["radioTemperatureScenario"];
+        } else {
+            console.log("is species graph");
+            this.scenario = this.config.values["radioMultilineScenario"];
+        }
+
         console.log("scenario: ", this.scenario);
-
-        this.metricGraphs = [];
-
         const url = `/api/climate?scenario=${this.scenario}&file=pos_generative_rand`;
         const response = await fetch(url);
         const data = await response.json();
         // console.log(data);
 
-        var specie_data = data["year"].map((year, i) => ({
-            year: year,
-            emissions: data[this.specie.concat("_emissions") as keyof typeof data][i],
-            airborne_emissions: data[this.specie.concat("_airborne_emissions") as keyof typeof data][i],
-            concentration:data[this.specie.concat("_concentration") as keyof typeof data][i],
-            forcing: data[this.specie.concat("_forcing") as keyof typeof data][i],
-            run: data["run"][i]
-        }))
+        if (this.temperature_graph) {
+            var temperature_data = data["year"].map((year, i) => ({
+                year: year,
+                atmospheric_temp: data["atmospheric_temp" as keyof typeof data][i],
+                sea_layer1_temp: data["sea_layer1_temp" as keyof typeof data][i],
+                sea_layer2_temp: data["sea_layer2_temp" as keyof typeof data][i],
+                sea_layer3_temp: data["sea_layer3_temp" as keyof typeof data][i],
+                run: data["run"][i]
+            }))
 
-        specie_data = specie_data.filter(d => d.run < 100);
-
-        for (var metric of this.metrics) {
-            let graph:MetricGraph = {
-                specie: this.specie,
-                scenario: this.scenario,
-                metric: metric,
-                delaunay: null,
-                points: null,
-                groups: null,
-                x: specie_data.map((d)=>d.year),
-                y: specie_data.map((d)=>this.getMetric(d, metric)),
-                run: specie_data.map((d)=>d.run)
+            for (var layer of layers) {
+                let graph:TemperatureGraph = {
+                    scenario: this.scenario,
+                    layer: layer,
+                    delaunay: null,
+                    points: null,
+                    groups: null,
+                    x: temperature_data.map((d)=>d.year),
+                    y: temperature_data.map((d)=>this.getLayer(d, layer)),
+                    run: temperature_data.map((d)=>d.run)
+                }
+                this.subGraphs.push(graph);
             }
-            this.metricGraphs.push(graph);
+        } else {
+            this.specie = this.config.values["radioMultilineSpecies"];
+            console.log("species: ", this.specie);
+
+            var specie_data = data["year"].map((year, i) => ({
+                year: year,
+                emissions: data[this.specie.concat("_emissions") as keyof typeof data][i],
+                airborne_emissions: data[this.specie.concat("_airborne_emissions") as keyof typeof data][i],
+                concentration:data[this.specie.concat("_concentration") as keyof typeof data][i],
+                forcing: data[this.specie.concat("_forcing") as keyof typeof data][i],
+                run: data["run"][i]
+            }))
+
+            specie_data = specie_data.filter(d => d.run < 100);
+
+            for (var metric of metrics) {
+                let graph:MetricGraph = {
+                    specie: this.specie,
+                    scenario: this.scenario,
+                    metric: metric,
+                    delaunay: null,
+                    points: null,
+                    groups: null,
+                    x: specie_data.map((d)=>d.year),
+                    y: specie_data.map((d)=>this.getMetric(d, metric)),
+                    run: specie_data.map((d)=>d.run)
+                }
+                this.subGraphs.push(graph);
+            }
         }
 
         if (render) {
@@ -127,16 +211,22 @@ class OverlayedLineGraph extends Figure {
     }
 
     public render(): void {
-        const sp = this.specie;
         // Create container for the screen
         this.DOMElement.innerHTML = "";
         const graphContainer = d3.select(this.DOMElement)
         .style("display", "flex").style("flex-wrap", "wrap");
 
-        this.metricGraphs.forEach(async graph => {
+        console.log(this.subGraphs);
+
+        this.subGraphs.forEach(async graph => {
             // console.log(graph);
             // Generate unique IDs for each graph
-            const chartId = `chart-${graph.metric}`;
+            var chartId:string;
+            if (this.temperature_graph) {
+                chartId = `chart-${graph.layer}`;
+            } else {
+                chartId = `chart-${graph.metric}`;
+            }
             // Create container for each graph
             const chartContainer = graphContainer.append("div").attr("id", chartId).style("position", "relative").style("width", "50%");
 
@@ -144,7 +234,7 @@ class OverlayedLineGraph extends Figure {
             const svg = chartContainer.append("svg")
                 .attr("width", width)
                 .attr("height", height)
-                .attr("style", "max-width: 100%; height: auto; overflow: visible; font: 10px sans-serif;");
+                .attr("style", "max-width: 100%; height: auto; overflow: visible; font: 10px sans-serif; box-sizing: border-box;");
 
             requestAnimationFrame(() => {
                 // Access the bounding client rect after the SVG is rendered
@@ -186,6 +276,12 @@ class OverlayedLineGraph extends Figure {
                     .call(d3.axisBottom(xScale).tickFormat(d3.format("d")).tickSizeOuter(0));
 
                 // Add the vertical axis.
+                var label:string;
+                if (this.temperature_graph) {
+                    label = graph.layer;
+                } else {
+                    label = this.specie.concat(" " + graph.metric);
+                }
                 svg.append("g")
                     .attr("transform", `translate(${margin.left},0)`)
                     .call(d3.axisLeft(yScale))
@@ -195,7 +291,7 @@ class OverlayedLineGraph extends Figure {
                         .attr("y", 10)
                         .attr("fill", "currentColor")
                         .attr("text-anchor", "start")
-                        .text(sp.concat(" " + graph.metric)));
+                        .text(label));
 
                 const line = d3.line();
                 const path = svg.append("g")
@@ -230,7 +326,7 @@ class OverlayedLineGraph extends Figure {
                 
                 svg
                     .on("click", (event) => {
-                        console.log(graph.metric);
+                        console.log(label);
                         let [mx, my] = d3.pointer(event);
                         console.log("%d, %d", mx, my);
                         const i = graph.delaunay.find(mx, my);
@@ -312,6 +408,23 @@ class OverlayedLineGraph extends Figure {
             }
             case "forcing":
                 return d.forcing;
+        }
+        return;
+    }
+
+    private getLayer(d:any, layer:string):any {
+        switch(layer) {
+            case "atmospheric_temp": {
+                return d.atmospheric_temp;
+            }
+            case "sea_layer1_temp": {
+                return d.sea_layer1_temp;
+            }
+            case "sea_layer2_temp": {
+                return d.sea_layer2_temp;
+            }
+            case "sea_layer3_temp":
+                return d.sea_layer3_temp;
         }
         return;
     }

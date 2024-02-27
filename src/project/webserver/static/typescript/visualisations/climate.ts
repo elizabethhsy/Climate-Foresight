@@ -67,8 +67,26 @@ async function setupRibbonGraph(): void {
     graph.render();
 }
 
+async function setupTemperatureGraph(): void {
+    // Create config for ribbon graph
+    const configParent = document.getElementById("config-4-parent");
+    const config = new Config(4);
+
+    config.add_heading("SSP Scenario");
+    config.add_value("radioTemperatureScenario", "Radio Scenario", "dropdown", ["ssp119", "ssp126", "ssp245", "ssp370", "ssp434", "ssp534-over", "ssp585"], "ssp119");
+
+    config.instantiate(configParent); // instantiate on the web page
+    const graphElement = document.getElementById('temperature-graph');
+    const graph = new OverlayedLineGraph(graphElement, config, true);
+    await graph.init();
+    setTimeout(() => {
+        graph.render();
+    }, 4000);
+}
+
 async function setupClimateFigures(): void {
     setupBarChart();
     setupMultilineGraph();
     setupRibbonGraph();
+    setupTemperatureGraph();
 }
