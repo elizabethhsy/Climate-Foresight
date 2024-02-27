@@ -1,6 +1,20 @@
-// import * as THREE from 'three';
-// import * as d3 from 'd3';
-// import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'; // Import OrbitControls
+import * as THREE from 'three';
+import * as d3 from 'd3';
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls'; // Import OrbitControls
+
+const materialColors = [
+  0xb71c1c, 0x1b5e20, 0x0d47a1,
+  0x8b0000, 0x006400, 0x00008b,
+  0xdc143c, 0x228b22, 0x4169e1,
+  0xff0000, 0x008000, 0x0000ff,
+  0xff6347, 0x32cd32, 0x1e90ff,
+  0xff6347, 0x00ff00, 0x00bfff,
+  0xff7f50, 0x7fff00, 0x87ceeb,
+  0xffa07a, 0xadff2f, 0xb0e0e6
+];
+
+const trailLength = 30;
+const trailOpacity = 0.3;
 
 function control_setup(controls){
   // Enable damping for smooth camera movement
@@ -40,7 +54,7 @@ function control_setup(controls){
   controls.dampingFactor = 0.25;
 }
 
-function createSphere(materialIndex, scene, spheres) {
+function createSphere(materialIndex, scene, spheres, geometry) {
   const material = new THREE.MeshBasicMaterial({color: materialColors[materialIndex]})
   const sphere = new THREE.Mesh(geometry, material);
   sphere.name = 'sphere' + `${materialIndex}`;
@@ -55,7 +69,7 @@ function createTrailParticleSystem(trailColor, scene, particleSystems) {
 
   const particleGeometry = new THREE.SphereGeometry(0.5, 16, 16); // Change square to circle
   particleGeometry.rotateX(Math.PI / 2); // Rotate to face the camera
-  
+
   const particleMaterial = new THREE.PointsMaterial({
     color: trailColor,
     size: 0.2,
@@ -72,15 +86,12 @@ function createTrailParticleSystem(trailColor, scene, particleSystems) {
   particleSystems.push(particleSystem);
 }
 
-function 3bodyAnimation(div: String){
+export async function ThreeBodyAnimation(div: string){
   const speed = 3;
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.z = 5;
 
-
-  const trailLength = 30;
-  const trailOpacity = 0.3;
   const particleSystems = [];
 
   const renderer = new THREE.WebGLRenderer();
@@ -88,7 +99,7 @@ function 3bodyAnimation(div: String){
   renderer.setPixelRatio(window.devicePixelRatio * 4); // Increase renderer pixel ratio
   renderer.setClearColor(0xFFFFFF);
   // document.body
-  var spheres_div = document.getElementById("div");
+  var spheres_div = document.getElementById(div);
   spheres_div.appendChild(renderer.domElement);
   const gridSize = 20; // Size of the grid
   const gridDivisions = 10; // Number of divisions
@@ -125,16 +136,6 @@ function 3bodyAnimation(div: String){
 
   const data_length = jsonData[0].planet_coordsX_A.length;
   console.log('datalength:' + data_length);
-  const materialColors = [
-    0xb71c1c, 0x1b5e20, 0x0d47a1,
-    0x8b0000, 0x006400, 0x00008b,
-    0xdc143c, 0x228b22, 0x4169e1,
-    0xff0000, 0x008000, 0x0000ff,
-    0xff6347, 0x32cd32, 0x1e90ff,
-    0xff6347, 0x00ff00, 0x00bfff,
-    0xff7f50, 0x7fff00, 0x87ceeb,
-    0xffa07a, 0xadff2f, 0xb0e0e6
-  ];
 
 
 // // Function to generate a slightly different color from a given color
@@ -179,7 +180,7 @@ function 3bodyAnimation(div: String){
 
 
   for (let i = 0; i < materialColors.length; i++) {
-    createSphere(i, scene, spheres);
+    createSphere(i, scene, spheres, geometry);
   }
 
 
@@ -216,7 +217,7 @@ function 3bodyAnimation(div: String){
           console.log('added sphere' + i);
         }
       }
-      console.log("detected" + key);  
+      console.log("detected" + key);
     }
   });
 
@@ -238,7 +239,7 @@ function 3bodyAnimation(div: String){
     // var intersects = raycaster.intersectObject(scene, true);
 
     // if (intersects.length > 0) {
-      
+
     //     var object = intersects[0].object;
 
     //     object.material.color.set( Math.random() * 0xffffff );
@@ -290,7 +291,7 @@ function 3bodyAnimation(div: String){
             // Update trail particles position associated with the ith sphere
             const trailParticles = particleSystems[3 * i + k].geometry.attributes.position.array;
             const spherePosition = spheres[3 * i + k].position;
-            
+
             // Update position buffer attribute for the trail particles
             for (let j = trailLength - 1; j >= 1; j--) { // Skip the first few particles
               const index = j * 3;
@@ -313,7 +314,7 @@ function 3bodyAnimation(div: String){
         }
         currentIndex = (currentIndex + speed) % data_length;
       }
-    
+
     controls.update();
     // Render scene
     renderer.render(scene, camera);
@@ -321,3 +322,6 @@ function 3bodyAnimation(div: String){
 
   animate();
 }
+
+alert("test");
+ThreeBodyAnimation("testdiv");
