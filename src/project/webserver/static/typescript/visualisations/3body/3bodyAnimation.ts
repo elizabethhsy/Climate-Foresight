@@ -88,6 +88,7 @@ function createTrailParticleSystem(trailColor, scene, particleSystems) {
 
 export async function ThreeBodyAnimation(div: string){
   const speed = 3;
+  const targetFrameRate = 60;
   const scene = new THREE.Scene();
   const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
   camera.position.z = 5;
@@ -234,7 +235,13 @@ export async function ThreeBodyAnimation(div: string){
     mouseNDC.x = (mouseX / rect.width) * 2 - 1;
     mouseNDC.y = -(mouseY / rect.height) * 2 + 1;
   });
-  const animate = () => {
+  let lastFrameTime = Date.now();
+  const animate = async () => {
+    let frameTime = Date.now() - lastFrameTime;
+    if (frameTime < 1000 / targetFrameRate) {
+      await new Promise(r => setTimeout(r, 1000 / targetFrameRate - frameTime));
+    }
+    lastFrameTime = Date.now();
     requestAnimationFrame(animate);
     // var intersects = raycaster.intersectObject(scene, true);
 
@@ -318,7 +325,7 @@ export async function ThreeBodyAnimation(div: string){
     controls.update();
     // Render scene
     renderer.render(scene, camera);
-    };
+  };
 
   animate();
 }
