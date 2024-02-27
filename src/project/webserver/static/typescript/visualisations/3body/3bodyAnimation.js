@@ -89,7 +89,7 @@ export async function ThreeBodyAnimation(div) {
     const numFiles = 8;
     var jsonData = [];
     for (let i = 0; i < numFiles; i++) {
-        const url = "api/3body?x=0.0" + `${i}`;
+        const url = "/api/3body/0.0" + `${i}` + "/deriv_generative.json";
         const data = await fetch(url);
         const dataJson = await data.json();
         jsonData.push(dataJson);
@@ -262,5 +262,4 @@ export async function ThreeBodyAnimation(div) {
     };
     animate();
 }
-alert("test");
 ThreeBodyAnimation("testdiv");
