@@ -15,9 +15,11 @@
         {% compress css %}
         <link rel="stylesheet" type="text/x-scss" href="{% static "stylesheets/main.scss" %}" />
         {% endcompress %}
+
+        {% block head %}{% endblock head %}
     </head>
 
-    <body>
+    <body onload="{% block onload %}{% endblock onload %}">
         <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
             <header class="mdl-layout__header">
                 <div class="mdl-layout__header-row">
