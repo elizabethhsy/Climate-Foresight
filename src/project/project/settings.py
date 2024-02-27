@@ -129,6 +129,8 @@ STATICFILES_FINDERS = (
     'compressor.finders.CompressorFinder',
 )
 
+COMPRESS_ENABLED = True
+COMPRESS_OFFLINE = True
 COMPRESS_PRECOMPILERS = (
     ('text/typescript', 'tsc-custom {infile} {outfile}'),
     ('text/x-scss', 'django_libsass.SassCompiler'),
