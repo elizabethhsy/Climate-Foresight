@@ -5,14 +5,14 @@ import { FontLoader } from 'three/addons/loaders/FontLoader.js';
 import { TextGeometry } from 'three/addons/geometries/TextGeometry.js';
 
 const materialColors = [
-  0xb71c1c, 0x1b5e20, 0x0d47a1,
-  0x8b0000, 0x006400, 0x00008b,
-  0xdc143c, 0x228b22, 0x4169e1,
-  0xff0000, 0x008000, 0x0000ff,
-  0xff6347, 0x32cd32, 0x1e90ff,
-  0xff6347, 0x00ff00, 0x00bfff,
-  0xff7f50, 0x7fff00, 0x87ceeb,
-  0xffa07a, 0xadff2f, 0xb0e0e6
+  0x00DD00, 0x00DD00, 0x00DD00, // Green
+  0xFF0000, 0xFF0000, 0xFF0000, // Red
+  0xFF7F00, 0xFF7F00, 0xFF7F00, // Orange
+  0xAAAA00, 0xAAAA00, 0xAAAA00, // Yellow
+  0x0000FF, 0x0000FF, 0x0000FF, // Blue
+  0x00FFFF, 0x00FFFF, 0x00FFFF, // Cyan
+  0x4B0082, 0x4B0082, 0x4B0082, // Indigo
+  0x9400D3, 0x9400D3, 0x9400D3, // Violet
 ];
 function createTextLabel(scene, text, position) {
   const loader = new FontLoader();
@@ -230,7 +230,7 @@ export async function ThreeBodyAnimation(div: string, configdiv: string){
       if(i == intersect_id){
         if(spheres_highlight[i] == 0){
           console.log('highlight ' + i);
-          spheres[i].material.color.set(Math.random() * 0xffffff);
+          // spheres[i].material.color.set(Math.random() * 0xffffff);
           spheres[i].scale.set(2, 2, 2);
           spheres_highlight[i] = 1;
         }
@@ -306,4 +306,4 @@ export async function ThreeBodyAnimation(div: string, configdiv: string){
   animate();
 }
 
-ThreeBodyAnimation("testdiv","configdiv");
+ThreeBodyAnimation("graph-div","config-div");
