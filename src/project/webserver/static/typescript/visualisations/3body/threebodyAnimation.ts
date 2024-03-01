@@ -122,7 +122,7 @@ function setupConfig(div: string): Config {
 
   config.add_heading("View Runs with Difffernt Noise Level");
   for (let i = 0; i < 8; i++) {
-    config.add_value("checkbox" + `${i}`, "Noise Level " + `${i}`, "checkbox", null, true);
+    config.add_value("checkbox" + `${i}`, "Noise Level " + `${i}`, "checkbox", null, (i === 0));
   }
   config.instantiate(configParent); // instantiate on the web page
   return config;
