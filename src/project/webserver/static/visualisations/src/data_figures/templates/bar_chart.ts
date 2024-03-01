@@ -451,9 +451,9 @@ class BarChart extends Figure {
 
         // Fill in area under curve
         const area = d3.area()
-            .x(d => x(d.density))
-            .y0(height - margin.bottom) // Base line - bottom of the graph
-            .y1(d => y(d.val)); // Top line - your data line
+            .x0(d => x(0))
+            .x1(d => x(d.density))
+            .y(d => y(d.val)); // x0 x1 and y because vertical plot
         
         const defs = pdfSvg.append("defs");
 
