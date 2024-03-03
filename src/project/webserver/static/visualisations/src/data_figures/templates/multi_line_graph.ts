@@ -31,6 +31,7 @@ type TemperatureGraph = {
 // Declare the chart dimensions and margins.
 const width = 1200;
 const height = 800;
+const NUM_RUNS_TO_USE = 50;
 
 const tooltipWidth = 100;
 const tooltipHeight = 75;
@@ -80,7 +81,7 @@ class OverlayedLineGraph extends Figure {
         // console.log(data);
 
         if (this.temperature_graph == true) {
-            var temperature_data = data["year"].map((year, i) => ({
+            let temperature_data200 = data["year"].map((year, i) => ({
                 year: year,
                 atmospheric_temp: data["atmospheric_temp" as keyof typeof data][i],
                 sea_layer1_temp: data["sea_layer1_temp" as keyof typeof data][i],
@@ -88,6 +89,8 @@ class OverlayedLineGraph extends Figure {
                 sea_layer3_temp: data["sea_layer3_temp" as keyof typeof data][i],
                 run: data["run"][i]
             }))
+
+            let temperature_data = temperature_data200.filter(d => d.run < NUM_RUNS_TO_USE);
 
             for (var layer of layers) {
                 let graph:TemperatureGraph = {
@@ -103,7 +106,7 @@ class OverlayedLineGraph extends Figure {
                 this.subGraphs.push(graph);
             }
         } else {
-            var specie_data = data["year"].map((year, i) => ({
+            var specie_data200 = data["year"].map((year, i) => ({
                 year: year,
                 emissions: data[this.specie.concat("_emissions") as keyof typeof data][i],
                 airborne_emissions: data[this.specie.concat("_airborne_emissions") as keyof typeof data][i],
@@ -112,7 +115,7 @@ class OverlayedLineGraph extends Figure {
                 run: data["run"][i]
             }))
 
-            specie_data = specie_data.filter(d => d.run < 100);
+            let specie_data = specie_data200.filter(d => d.run < NUM_RUNS_TO_USE);
 
             for (var metric of metrics) {
                 let graph:MetricGraph = {
@@ -153,7 +156,7 @@ class OverlayedLineGraph extends Figure {
         // console.log(data);
 
         if (this.temperature_graph) {
-            var temperature_data = data["year"].map((year, i) => ({
+            let temperature_data200 = data["year"].map((year, i) => ({
                 year: year,
                 atmospheric_temp: data["atmospheric_temp" as keyof typeof data][i],
                 sea_layer1_temp: data["sea_layer1_temp" as keyof typeof data][i],
@@ -161,6 +164,8 @@ class OverlayedLineGraph extends Figure {
                 sea_layer3_temp: data["sea_layer3_temp" as keyof typeof data][i],
                 run: data["run"][i]
             }))
+
+            let temperature_data = temperature_data200.filter(d => d.run < NUM_RUNS_TO_USE);
 
             for (var layer of layers) {
                 let graph:TemperatureGraph = {
@@ -176,7 +181,7 @@ class OverlayedLineGraph extends Figure {
                 this.subGraphs.push(graph);
             }
         } else {
-            var specie_data = data["year"].map((year, i) => ({
+            let specie_data200 = data["year"].map((year, i) => ({
                 year: year,
                 emissions: data[this.specie.concat("_emissions") as keyof typeof data][i],
                 airborne_emissions: data[this.specie.concat("_airborne_emissions") as keyof typeof data][i],
@@ -185,7 +190,7 @@ class OverlayedLineGraph extends Figure {
                 run: data["run"][i]
             }))
 
-            specie_data = specie_data.filter(d => d.run < 100);
+            let specie_data = specie_data200.filter(d => d.run < 10);
 
             for (var metric of metrics) {
                 let graph:MetricGraph = {
