@@ -43,10 +43,12 @@ setupClimateFigures();
             <a href="#graph1-panel" class="mdl-tabs__tab is-active">Bar Chart</a>
             <a href="#graph2-panel" class="mdl-tabs__tab">Multi-Line Graph</a>
             <a href="#graph3-panel" class="mdl-tabs__tab">Ribbon Graph</a>
+            <a href="#graph4-panel" class="mdl-tabs__tab">Temperature Graph</a>
         </div>
 
         <div class="mdl-tabs__panel is-active" id="graph1-panel">
             <div class="flex-container mdl-grid">
+                <div id="tooltip" style="position: absolute; visibility: hidden; background-color: lightgrey; padding: 8px; border-radius: 4px; pointer-events: none;"></div>
                 <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp" id="config-1-parent"></div>
                 <div class="mdl-cell mdl-cell--10-col card mdl-shadow--4dp" id="bar-chart"></div>
             </div>
@@ -63,6 +65,13 @@ setupClimateFigures();
             <div class="flex-container mdl-grid">
                 <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp" id="config-3-parent"></div>
                 <div class="mdl-cell mdl-cell--10-col card mdl-shadow--4dp" id="ribbon-graph"></div>
+            </div>
+        </div>
+
+        <div class="mdl-tabs__panel" id="graph4-panel">
+            <div class="flex-container mdl-grid">
+                <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp" id="config-4-parent"></div>
+                <div class="mdl-cell mdl-cell--10-col card mdl-shadow--4dp" id="temperature-graph"></div>
             </div>
         </div>
 

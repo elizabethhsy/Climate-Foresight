@@ -13,7 +13,7 @@ class BarChart extends Figure {
     
     static INTERVAL = 5;  // bar chart is in 5 year intervals (i.e. taking every 5th data point)
 
-    static colorMap = { // TODO: move to parent class?
+    static colorMap = {
         CO2: '#4a8dbb',
         CH4: '#6ebd6e',
         N2O: '#ff9f4f'
@@ -61,8 +61,16 @@ class BarChart extends Figure {
             const data = await fetch(url);
             this.data[scenario] = await data.json();
             console.log("just fetched data for " + scenario);
-            console.log(this.data);
+            // console.log(this.data);
         }
+    }
+
+    private async getPDFData(scenario, year, species, metric) {
+        const url = `/api/climate2/${scenario}/year/${year}/${species}_${metric.toLowerCase()}.json`;
+        const response = await fetch(url);
+        const data = await response.json();
+        // console.log(data);
+        return data;
     }
 
     // Initialize bar chart without rendering
@@ -83,7 +91,7 @@ class BarChart extends Figure {
         return checkedBoxes;
     }
 
-    public render(): void {
+    public async render(): void {
         const self = this; // capture this BarChart instance for later use within event handlers
 
         // Remove existing svg elements and replace with new figure
@@ -126,9 +134,9 @@ class BarChart extends Figure {
         const width = 1450;
         const height = 750;
         const margin = {
-            top: 60,
+            top: 90,
             right: 70,
-            bottom: 100,
+            bottom: 60,
             left: 100
         }
 
@@ -171,17 +179,49 @@ class BarChart extends Figure {
             .attr("width", x.bandwidth())
             .attr("height", 0);
 
+        // Legend settings
+        const legendSize = 14; // Size of the color swatches
+        const legendSpacing = 4; // Space between swatches and text
+        const legendPosition = { x: margin.left + 30, y: margin.top + 20 }; // Adjust based on your layout
+
+        // Create a legend container
+        const legend = svg.append('g')
+            .attr('class', 'legend')
+            .attr('transform', `translate(${legendPosition.x},${legendPosition.y})`);
+
+        // Add legend entries
+        Object.entries(BarChart.colorMap).forEach(([key, value], index) => {
+            if (self.species.includes(key)) {
+                const legendEntry = legend.append('g')
+                    .attr('class', 'legend-entry')
+                    .attr('transform', `translate(0, ${index * (legendSize + legendSpacing)})`);
+                
+                // Append color swatch
+                legendEntry.append('rect')
+                    .attr('width', legendSize)
+                    .attr('height', legendSize)
+                    .attr('fill', value);
+                
+                // Append text label
+                legendEntry.append('text')
+                    .attr('x', legendSize + legendSpacing)
+                    .attr('y', legendSize - legendSpacing)
+                    .text(key);
+            }
+        });
+
         // Create labels for when hovering over the bar
         const tooltip = d3.select("#tooltip");
 
-        const histData = {
-            "CO2": Array.from({length: 1000}, (x, i) => 15 * Math.sin(Math.random() * Math.PI)),
-            "CH4": [],
-            "N2O": []
-        };
+        rect.on("mouseover", async function(event, d) {
+                const currentSpecies = self.species[Math.floor(rect.data().indexOf(d) / numPoints)];
 
-        rect.on("mouseover", function(event, d) {
-                console.log(self.config.values);
+                // Display hover text
+                tooltip.style("visibility", "visible")
+                    .html(`Year: ${xz[rect.data().indexOf(d) % numPoints]}<br>${currentSpecies} ${self.metric}: ${(d[1] - d[0]).toFixed(2)}`)
+                    .style("top", (event.pageY - 150) + "px")
+                    .style("left", (event.pageX - 80) + "px");
+            
                 // Reduce opacity of all rects
                 svg.selectAll("rect")
                     .style("opacity", 0.35);
@@ -199,25 +239,20 @@ class BarChart extends Figure {
                     .style("opacity", 1);
 
                 // Create histogram
-                const histSvg = self.createHoverFigure(histData["CO2"]);
+                const year = 1750 + currentColumnIndex * 5;
+                const pdfData = await self.getPDFData(self.scenario, year, currentSpecies, self.metric)
+                const pdfSVG = await self.createPDFSVG(pdfData, currentSpecies); // TODO: make dynamic
 
                 // Calculate position based on the hovered rectangle's position
                 const rectBounds = this.getBoundingClientRect();
-                histSvg.style("left", `${rectBounds.right + 10}px`) // 10px to the right of the rect
-                        .style("top", `${rectBounds.top - 100}px`)
+                pdfSVG.style("left", `${rectBounds.right + 10}px`) // 10px to the right of the rect
+                        .style("top", `${Math.min(rectBounds.top - 100, height - 150)}px`)
                         .style("visibility", "visible");
 
-
-
-                // Display hover text
-                // tooltip.style("visibility", "visible")
-                //     .html(`Year: ${xz[rect.data().indexOf(d) % numPoints]}<br>Forcing: ${(d[1] - d[0]).toFixed(2)}`)
-                //     .style("top", (event.pageY - 10) + "px")
-                //     .style("left",(event.pageX + 10) + "px");
             })
             .on("mousemove", function(event, d) {
-                tooltip.style("top", (event.pageY - 10) + "px")
-                    .style("left",(event.pageX + 10) + "px");
+                tooltip.style("top", (event.pageY - 150) + "px")
+                    .style("left",(event.pageX - 80) + "px");
             })
             .on("mouseout", function() {
                 // Restore opacity for all rects
@@ -238,6 +273,40 @@ class BarChart extends Figure {
             .attr("transform", `translate(0,${height - margin.bottom})`)
             .call(d3.axisBottom(x).tickSizeOuter(0))
             .call(xAxis); // ensure x-axis only shows correct labels
+
+        // Axis titles
+        svg.append("text")
+            .attr("class", "x label")
+            .style("font-family", "Arial, sans-serif")
+            .style("font-size", "16px")
+            .attr("text-anchor", "middle")
+            .attr("x", width / 2)
+            .attr("y", height - margin.bottom / 3)
+            .text("year");
+
+        svg.append("text")
+            .attr("class", "y label")
+            .style("font-family", "Arial, sans-serif")
+            .style("font-size", "16px")
+            .attr("text-anchor", "middle")
+            .attr("transform", "rotate(-90)") // Rotate the text
+            .attr("x", -height / 2) // Position the text vertically centered
+            .attr("y", margin.left / 2) // Adjust this value as needed for vertical positioning
+            .text(this.metric);
+
+        // Figure title
+        const metric = this.metric.replace("_", " ");
+        const title = metric.charAt(0).toUpperCase() + this.metric.slice(1) + " Over Time";
+        svg.append("text")
+            .attr("class", "title")
+            .style("font-family", "Arial, sans-serif")
+            .style("font-size", "24px")
+            // .style("font-weight", "bold")
+            .attr("text-anchor", "middle")
+            .attr("x", width / 2)
+            .attr("y", margin.top / 2) // Adjust this value to position the title vertically
+            .text(title);
+        
         
         // Add y axis to chart
         svg.append("g")
@@ -301,6 +370,7 @@ class BarChart extends Figure {
 
     private kernelDensityEstimation(data) {
         // Create a pdf from a discrete dataset
+        data = d3.sort(data);
 
         function calculateVariance(data) {
             const mean = data.reduce((acc, val) => acc + val, 0) / data.length;
@@ -330,20 +400,16 @@ class BarChart extends Figure {
         return density;
     }
 
-    private createHoverFigure(data) {
-        // data = this.kernelDensityEstimation(data);
-
-        // Dummy data
-        data = Array.from({length: 1000}, (v,i) => {return {val: (i-500)/170, density: 1 / Math.sqrt(2 * Math.PI) * Math.exp(-0.5 * ((i - 500) / 170) ** 2)};});
-        // console.log(data);
+    private async createPDFSVG(data, species) {
+        data = this.kernelDensityEstimation(data);
 
         // Dimensions
-        const width = 100, height = 200; // make this dynamic
+        const width = 200, height = 300; // make this dynamic
         const margin = {
             top: 20,
             bottom: 20,
-            left: 30,
-            right: 30
+            left: 55,
+            right: 15
         }
 
         // Scales for the line graph
@@ -374,7 +440,7 @@ class BarChart extends Figure {
         //     .call(d3.axisTop(x).ticks(width / 40).tickSizeOuter(0));
         pdfSvg.append("g")
             .attr("transform", `translate(${margin.left},0)`)
-            .call(d3.axisLeft(y).tickSizeOuter(0));
+            .call(d3.axisLeft(y).ticks(width / 40).tickSizeOuter(0));
 
         // Append a path for the line
         pdfSvg.append("path")
@@ -385,9 +451,9 @@ class BarChart extends Figure {
 
         // Fill in area under curve
         const area = d3.area()
-            .x(d => x(d.density))
-            .y0(height - margin.bottom) // Base line - bottom of the graph
-            .y1(d => y(d.val)); // Top line - your data line
+            .x0(d => x(0))
+            .x1(d => x(d.density))
+            .y(d => y(d.val)); // x0 x1 and y because vertical plot
         
         // const defs = pdfSvg.append("defs");
 
@@ -414,31 +480,29 @@ class BarChart extends Figure {
 
         const defs = pdfSvg.append("defs");
 
+        const densityGradientID = "densityGradient" + species;
         const gradient = defs.append("linearGradient")
-            .attr("id", "densityGradient")
+            .attr("id", densityGradientID)
             .attr("gradientUnits", "userSpaceOnUse")
             .attr("x1", 0).attr("y1", y(d3.min(data, d => d.val)))
             .attr("x2", 0).attr("y2", y(d3.max(data, d => d.val)));
 
-        // Dynamically create gradient stops based on density values
-        const densityValues = data.map(d => d.density);
-        const maxDensity = d3.max(densityValues);
-        const minDensity = d3.min(densityValues);
-        const numStops = 10; // Number of gradient stops
+        // Define the color scale (interpolate colors to fill area below graph)
+        const colorScale = d3.scaleSequential(t => d3.interpolateLab(d3.interpolateLab(BarChart.colorMap[species], "white")(0.9), d3.interpolateLab(BarChart.colorMap[species], "black")(0.3))(t))
+            .domain([d3.max(data, d => d.density), 0]); // swapped so that high density means closer to white
 
-        for (let i = 0; i <= numStops; i++) {
-            const density = minDensity + (i / numStops) * (maxDensity - minDensity);
-            const opacity = density / maxDensity; // Normalize the density to [0, 1] for opacity
+        data.forEach((point, i, arr) => {
+            const yPercentage = (y(point.val) - margin.bottom) / (height - margin.bottom - margin.top) * 100;
             gradient.append("stop")
-                .attr("offset", `${(i / numStops) * 100}%`)
-                .attr("stop-color", `rgba(0, 0, 255, ${opacity})`); // Example: blue with variable opacity
-        }
+                .attr("offset", `${yPercentage}%`)
+                .attr("stop-color", colorScale(point.density));
+        });
 
         pdfSvg.append("path")
-            .datum(data)
-            .attr("fill", "url(#densityGradient)")
+            .datum(data) // Use datum since it's a single object
+            .attr("fill", `url(#${densityGradientID})`)
             .attr("d", area);
-        
+
         return pdfSvg;
     }
 }

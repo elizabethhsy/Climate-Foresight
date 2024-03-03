@@ -80,7 +80,7 @@ class Config extends Object {
                     inputEl.id = "radio-" + name + "-option-" + i;
                     inputEl.classList.add("mdl-radio__button");
                     inputEl.name = "radio-" + name;
-                    inputEl.value = i.toString();
+                    inputEl.value = params[i];
 
                     if (params[i] === defaultValue) {
                         inputEl.checked = true;
@@ -98,7 +98,7 @@ class Config extends Object {
 
                     inputEl.onclick = function() {
                         const radioButton = document.querySelector('input[name="radio-' + name + '"]:checked'); // find the checked radio button
-                        this_.values[name] = radioButton?.parentElement?.childNodes[1].innerHTML; // return label for that button
+                        this_.values[name] = radioButton?.value; // return label for that button
                         this_.notify();
                     }
                 }
