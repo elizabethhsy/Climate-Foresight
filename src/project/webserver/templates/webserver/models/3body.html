@@ -1,5 +1,35 @@
 {% extends "webserver/base.html" %}
 
+{% load static %}
+{% load compress %}
+
+{% block head %}
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.29.1.min.js" charset="utf-8"></script>
+
+    <script>var exports = {};</script>
+    <script type="importmap">
+        {
+          "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
+            "three/": "https://cdn.skypack.dev/three@0.142.0/"
+          }
+        }
+    </script>
+    <script type="module" src="{% static "typescript/visualisations/3body/threebodyAnimation.js" %}"></script>
+
+    {% compress js %}
+    <script type="text/typescript" src="{% static "typescript/configs.ts" %}"></script>
+    {% endcompress %}
+
+    {% compress css %}
+    <link rel="stylesheet" type="text/x-scss" href="{% static "stylesheets/configs.scss" %}" />
+    {% endcompress %}
+
+{% endblock head %}
+
 {% block content %}
 
     <div class="mdl-cell mdl-cell--12-col card mdl-shadow--4dp">
@@ -13,29 +43,12 @@
         </p>
     </div>
 
-    <div class="mdl-cell mdl-cell--4-col card mdl-shadow--4dp">
-        <p>Viz Placeholder</p>
-        <img src="https://images.twinkl.co.uk/tw1n/image/private/t_630/u/ux/graph-wiki_ver_1.png" class="vizplaceholder"/>
+    <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp" id="config-div"></div>
+
+    <div class="mdl-cell mdl-cell--10-col card mdl-shadow--4dp flex-container mdl-grid" id="3body-div">
+        <div class="mdl-cell mdl-cell--6-col card mdl-shadow--4dp" id="graph-div"></div>
+        <div class="mdl-cell mdl-cell--6-col card mdl-shadow--4dp" id="velocities-div"></div>
     </div>
 
-    <div class="mdl-cell mdl-cell--8-col card mdl-shadow--4dp">
-        <p>Viz Placeholder</p>
-        <img src="https://images.twinkl.co.uk/tw1n/image/private/t_630/u/ux/graph-wiki_ver_1.png" class="vizplaceholder"/>
-    </div>
-
-    <div class="mdl-cell mdl-cell--4-col card mdl-shadow--4dp">
-        <p>Viz Placeholder</p>
-        <img src="https://images.twinkl.co.uk/tw1n/image/private/t_630/u/ux/graph-wiki_ver_1.png" class="vizplaceholder"/>
-    </div>
-
-    <div class="mdl-cell mdl-cell--4-col card mdl-shadow--4dp">
-        <p>Viz Placeholder</p>
-        <img src="https://images.twinkl.co.uk/tw1n/image/private/t_630/u/ux/graph-wiki_ver_1.png" class="vizplaceholder"/>
-    </div>
-
-    <div class="mdl-cell mdl-cell--4-col card mdl-shadow--4dp">
-        <p>Viz Placeholder</p>
-        <img src="https://images.twinkl.co.uk/tw1n/image/private/t_630/u/ux/graph-wiki_ver_1.png" class="vizplaceholder"/>
-    </div>
 
 {% endblock content %}

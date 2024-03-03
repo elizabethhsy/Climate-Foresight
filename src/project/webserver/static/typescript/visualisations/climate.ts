@@ -50,15 +50,17 @@ async function setupRibbonGraph(): void {
     const config = new Config(3);
 
     config.add_heading("Data");
-    config.add_value("radioMetric", "Radio Metric", "radiobutton", ["forcing", "concentration", "emissions", "airborne emissions"], "forcing");
-    config.add_heading("");
-    config.add_heading("");
-    config.add_heading("");
-    config.add_heading("");
-    config.add_heading("");
-    config.add_heading("");
-    config.add_heading("");
-    config.add_heading("");
+    config.add_value("dropdownRibbonMetric", "Metric", "dropdown", ["temperature", "forcing", "concentration", "emissions", "airborne emissions"], "temperature");
+    config.add_heading("Species (if applicable)");
+    config.add_value("dropdownRibbonSpecies", "Species", "dropdown", ["CO2", "CH4", "N2O"], "CO2");
+    config.add_heading("Scenarios");
+    config.add_value("checkboxSSP119", "ssp119", "checkbox", null, true);
+    config.add_value("checkboxSSP126", "ssp126", "checkbox", null, true);
+    config.add_value("checkboxSSP245", "ssp245", "checkbox", null, true);
+    config.add_value("checkboxSSP370", "ssp370", "checkbox", null, true);
+    config.add_value("checkboxSSP434", "ssp434", "checkbox", null, true);
+    config.add_value("checkboxSSP534-over", "ssp534-over", "checkbox", null, true);
+    config.add_value("checkboxSSP585", "ssp585", "checkbox", null, true);
 
     config.instantiate(configParent); // instantiate on the web page
     const graphElement = document.getElementById('ribbon-graph');

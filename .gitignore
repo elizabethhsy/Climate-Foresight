@@ -1,6 +1,9 @@
 .vscode/*
 data/climate/*
 
+# large data
+src/project/webapi/static/large_data
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

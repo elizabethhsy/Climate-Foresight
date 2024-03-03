@@ -25,23 +25,25 @@ class ClimateJson(BaseJsonView):
     def get_data(self, request: HttpRequest) -> dict:
         params = request.GET
         scenario = params["scenario"]
-        if scenario not in self.SCENARIOS:
+        if scenario not in ClimateJson.SCENARIOS:
             raise Http404("Invalid scenario")
         filetype = params.get("file", "pos_generative_rand")
-        if filetype not in self.FILETYPES:
+        if filetype not in ClimateJson.FILETYPES:
             raise Http404("Invalid file type")
-        filepath = (BASE_DIR / "webapi/data/climate" / scenario / "clean" / filetype).with_suffix(".json")
+        filepath = (BASE_DIR / "webapi/static/large_data/climate_no_co2" / scenario / "clean" / filetype).with_suffix(".json")
         # Maintain flexibility should this be dynamic in the future
         with open(filepath) as f:
             data = json.load(f)
         return data
 
+
+# DEPRECATED
 class ThreeBodyJson(BaseJsonView):
-    XS = {"0.04"}
+    XS = {"0.00", "0.01", "0.02", "0.03", "0.04", "0.05", "0.06", "0.07"}
     def get_data(self, request: HttpRequest) -> dict:
         params = request.GET
         x = params["x"]
-        if x not in self.XS:
+        if x not in ThreeBodyJson.XS:
             raise Http404("Invalid x value")
         filepath = (BASE_DIR / "webapi/data/3body" / f"{x}" / "deriv_generative").with_suffix(".csv")
         with open(filepath, newline='') as f:
