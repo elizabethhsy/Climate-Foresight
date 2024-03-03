@@ -455,6 +455,29 @@ class BarChart extends Figure {
             .x1(d => x(d.density))
             .y(d => y(d.val)); // x0 x1 and y because vertical plot
         
+        // const defs = pdfSvg.append("defs");
+
+        // const gradient = defs.append("linearGradient")
+        //     .attr("id", "densityGradient")
+        //     .attr("gradientUnits", "userSpaceOnUse")
+        //     .attr("x1", 0).attr("y1", y(d3.min(data, d => d.val)))
+        //     .attr("x2", 0).attr("y2", y(d3.max(data, d => d.val)));
+
+        // gradient.append("stop")
+        //     .attr("offset", "0%")
+        //     .attr("stop-color", "lightblue") // Light color for low density
+        //     .attr("stop-opacity", 1.0);
+
+        // gradient.append("stop")
+        //     .attr("offset", "100%")
+        //     .attr("stop-color", "darkblue") // Dark color for high density
+        //     .attr("stop-opacity", 1);
+
+        // pdfSvg.append("path")
+        //     .datum(data) // Use datum since it's a single object
+        //     .attr("fill", "url(#densityGradient)")
+        //     .attr("d", area);
+
         const defs = pdfSvg.append("defs");
 
         const densityGradientID = "densityGradient" + species;
