@@ -54,6 +54,21 @@ Here is a list of possible scenarios: `['ssp119', 'ssp126', 'ssp245', 'ssp370', 
 - SSP5-3.4-Over (ssp534-over): An optimistic scenario assuming the use of extensive carbon dioxide removal technologies to overshoot and then reduce radiative forcing to 3.4 W/m² by 2100, despite initial high emissions.
 - SSP5-8.5 (ssp585): A scenario of unchecked economic growth powered by fossil fuels, leading to the highest radiative forcing level of 8.5 W/m² by 2100.
 
+## Three Body Visualisations
+
+### Embecosm DCM
+
+Embecosm Model
+
+- The forward model takes the initial state of our three planets (positions, masses, and velocities) and produce a time series of the state over a given period. This is done by using newtons law of gravitation to create equations of motion dictating the planets movements over time. We solve them using numerical methods (the runge-kutta method, implemented in dCEmbs utility module.)
+
+- We have an “equation of motion” function evaluating the rate of change of the state, given the current state, and a main “generative model” function that iteratively applies the runge-kutta method to this to produce a time series.
+- We invert the model by defining several extra parameters, including priors, the data we’re going to train on, and how this data relates to our generative model. When we add custom noises to the data we train on, this generates the posterior that we use for visualization.
+
+### Data
+- posterior generative data for noise level 0.00~0.08 (the number represents the divergence from initial position), calculated for 1,000 timesteps.
+
+
 ### Brainstorm
 
 JS Visualization Libraries
