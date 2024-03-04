@@ -1,0 +1,8 @@
+#! /usr/bin/env bash
+
+input_filename="$1"
+tsc_filename="${input_filename%.*}.js"
+output_filename="$2"
+
+npx tsc "${input_filename}" --target es2020
+mv "${tsc_filename}" "${output_filename}"

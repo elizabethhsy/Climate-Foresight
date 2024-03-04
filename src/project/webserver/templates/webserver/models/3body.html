@@ -1,0 +1,54 @@
+{% extends "webserver/base.html" %}
+
+{% load static %}
+{% load compress %}
+
+{% block head %}
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.29.1.min.js" charset="utf-8"></script>
+
+    <script>var exports = {};</script>
+    <script type="importmap">
+        {
+          "imports": {
+            "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+            "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/",
+            "three/": "https://cdn.skypack.dev/three@0.142.0/"
+          }
+        }
+    </script>
+    <script type="module" src="{% static "typescript/visualisations/3body/threebodyAnimation.js" %}"></script>
+
+    {% compress js %}
+    <script type="text/typescript" src="{% static "typescript/configs.ts" %}"></script>
+    {% endcompress %}
+
+    {% compress css %}
+    <link rel="stylesheet" type="text/x-scss" href="{% static "stylesheets/configs.scss" %}" />
+    {% endcompress %}
+
+{% endblock head %}
+
+{% block content %}
+
+    <div class="mdl-cell mdl-cell--12-col card mdl-shadow--4dp">
+        <h2>About the 3-body Model</h2>
+
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse non venenatis lectus. Vivamus non ante nulla. Fusce sit amet nisl urna. Nunc in dolor condimentum, rhoncus libero gravida, eleifend massa. Donec eu ipsum viverra, sodales massa quis, laoreet arcu. Nulla id ex at dui molestie scelerisque a ac urna. Sed tincidunt purus sed risus cursus iaculis. Donec porttitor convallis tortor ut sollicitudin.
+        </p>
+        <p>
+            Aliquam porta, elit sed placerat dapibus, dui orci luctus nibh, ultricies molestie metus quam in nisi. Nulla rhoncus pretium turpis, nec feugiat tortor condimentum sit amet. Vestibulum efficitur pellentesque aliquet. Ut varius, ante vitae tristique consequat, velit nunc pellentesque nunc, sit amet venenatis metus elit in sem. Praesent convallis felis sollicitudin, venenatis neque at, rhoncus ligula. Nunc neque ante, consectetur id lectus a, ornare tempor lorem. Praesent ac purus arcu. Integer erat quam, laoreet quis sagittis et, tempus vitae lacus. Vestibulum porttitor velit ut velit fringilla, nec laoreet lacus rhoncus. Fusce eleifend ullamcorper tellus sit amet blandit. Vestibulum pharetra sed arcu nec posuere. Nulla ac pellentesque lectus. Quisque aliquet turpis quis leo vulputate tempor. Ut viverra sagittis eleifend. Suspendisse placerat ac turpis sed euismod.
+        </p>
+    </div>
+
+    <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp" id="config-div"></div>
+
+    <div class="mdl-cell mdl-cell--10-col card mdl-shadow--4dp flex-container mdl-grid" id="3body-div">
+        <div class="mdl-cell mdl-cell--6-col card mdl-shadow--4dp" id="graph-div"></div>
+        <div class="mdl-cell mdl-cell--6-col card mdl-shadow--4dp" id="velocities-div"></div>
+    </div>
+
+
+{% endblock content %}

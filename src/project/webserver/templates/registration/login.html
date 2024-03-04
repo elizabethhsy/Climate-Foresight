@@ -1,0 +1,25 @@
+{% extends "webserver/base.html" %}
+
+{% block content %}
+    <div class="mdl-cell mdl-cell--12-col card mdl-shadow--4dp">
+        <h1>Login</h1>
+
+        {% if form.errors %}
+            <p>Your username and password didn't match. Please try again.</p>
+        {% endif %}
+
+        <form method="post" action="{% url 'login' %}">
+            {% csrf_token %}
+
+            {% for field in form %}
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" name="{{ field.html_name }}" id="{{ field.id_for_label }}" type="{{field.field.widget.input_type}}">
+                    <label class="mdl-textfield__label" for="{{ field.id_for_label }}">{{ field.label }}</label>
+                </div><br/>
+            {% endfor %}
+
+            <input type="submit" value="login" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent"/>
+            <input type="hidden" name="next" value="{{ next }}" />
+        </form>
+    </div>
+{% endblock %}

@@ -1,0 +1,11 @@
+@import "test_variables.scss";
+
+.test-text {
+    color: $test-font-col;
+    font-family: $test-font-face;
+}
+
+.card {
+    border-radius: 6px;
+    padding: 6px 8px 6px 8px;
+}

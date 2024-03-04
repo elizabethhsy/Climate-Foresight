@@ -1,0 +1,80 @@
+{% extends "webserver/base.html" %}
+{% load compress %}
+{% load static %}
+
+{% block head %}
+
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-2.29.1.min.js" charset="utf-8"></script>
+
+    {% compress js %}
+    <script>var exports = {};</script>
+    <script type="text/typescript" src="{% static "visualisations/src/data_figures/templates/figure.ts" %}" />
+    <script type="text/typescript" src="{% static "visualisations/src/data_figures/templates/bar_chart.ts" %}" />
+    <script type="text/typescript" src="{% static "visualisations/src/data_figures/templates/multi_line_graph.ts" %}" />
+    <script type="text/typescript" src="{% static "visualisations/src/data_figures/templates/ribbon_graph.ts" %}" />
+    <script type="text/typescript" src="{% static "typescript/visualisations/climate.ts" %}" />
+    <script type="text/typescript" src="{% static "typescript/configs.ts" %}"/>
+    {% endcompress %}
+
+    {% compress css %}
+    <link rel="stylesheet" type="text/x-scss" href="{% static "stylesheets/configs.scss" %}" />
+    {% endcompress %}
+
+{% endblock head %}
+
+{% block onload %}
+setupClimateFigures();
+{% endblock onload %}
+
+{% block content %}
+
+    <div class="mdl-cell mdl-cell--12-col card mdl-shadow--4dp">
+        <h2>About the Climate Model</h2>
+
+        <p>
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse non venenatis lectus. Vivamus non ante nulla. Fusce sit amet nisl urna. Nunc in dolor condimentum, rhoncus libero gravida, eleifend massa. Donec eu ipsum viverra, sodales massa quis, laoreet arcu. Nulla id ex at dui molestie scelerisque a ac urna. Sed tincidunt purus sed risus cursus iaculis. Donec porttitor convallis tortor ut sollicitudin.
+        </p>
+    </div>
+
+    <div class="mdl-tabs mdl-js-tabs mdl-js-ripple-effect">
+
+        <div class="mdl-tabs__tab-bar">
+            <a href="#graph1-panel" class="mdl-tabs__tab is-active">Bar Chart</a>
+            <a href="#graph2-panel" class="mdl-tabs__tab">Multi-Line Graph</a>
+            <a href="#graph3-panel" class="mdl-tabs__tab">Ribbon Graph</a>
+            <a href="#graph4-panel" class="mdl-tabs__tab">Temperature Graph</a>
+        </div>
+
+        <div class="mdl-tabs__panel is-active" id="graph1-panel">
+            <div class="flex-container mdl-grid">
+                <div id="tooltip" style="position: absolute; visibility: hidden; background-color: lightgrey; padding: 8px; border-radius: 4px; pointer-events: none;"></div>
+                <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp" id="config-1-parent"></div>
+                <div class="mdl-cell mdl-cell--10-col card mdl-shadow--4dp" id="bar-chart"></div>
+            </div>
+        </div>
+
+        <div class="mdl-tabs__panel" id="graph2-panel">
+            <div class="flex-container mdl-grid">
+                <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp" id="config-2-parent"></div>
+                <div class="mdl-cell mdl-cell--10-col card mdl-shadow--4dp" id="multi-line-graph"></div>
+            </div>
+        </div>
+
+        <div class="mdl-tabs__panel" id="graph3-panel">
+            <div class="flex-container mdl-grid">
+                <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp" id="config-3-parent"></div>
+                <div class="mdl-cell mdl-cell--10-col card mdl-shadow--4dp" id="ribbon-graph"></div>
+            </div>
+        </div>
+
+        <div class="mdl-tabs__panel" id="graph4-panel">
+            <div class="flex-container mdl-grid">
+                <div class="mdl-cell mdl-cell--2-col card mdl-shadow--4dp" id="config-4-parent"></div>
+                <div class="mdl-cell mdl-cell--10-col card mdl-shadow--4dp" id="temperature-graph"></div>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock content %}
