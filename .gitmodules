@@ -1,6 +1,3 @@
 [submodule "dcEmb"]
 	path = dcEmb
 	url = https://github.com/embecosm/dcEmb
-[submodule "test_dcm"]
-	path = test_dcm
-	url = https://github.com/Layomiiety/test_dcm.git
