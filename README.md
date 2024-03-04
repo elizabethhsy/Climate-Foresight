@@ -54,7 +54,8 @@ Here is a list of possible scenarios: `['ssp119', 'ssp126', 'ssp245', 'ssp370', 
 - SSP5-3.4-Over (ssp534-over): An optimistic scenario assuming the use of extensive carbon dioxide removal technologies to overshoot and then reduce radiative forcing to 3.4 W/m² by 2100, despite initial high emissions.
 - SSP5-8.5 (ssp585): A scenario of unchecked economic growth powered by fossil fuels, leading to the highest radiative forcing level of 8.5 W/m² by 2100.
 
-### How to view the climate visualisations
+### How to view the climate visualisations
+
 Navigate to the climate page and select one of the 4 options:
 1. bar chart
 2. multi-line graph
