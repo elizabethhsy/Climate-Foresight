@@ -110,6 +110,7 @@ JS Visualization Libraries
 
 - The project is designed to run on Python 3.8. This can usually be installed from your system's package manager (or from the web on Windows).
     - If Python3.8 is not set as your default Python version, ensure you use `python3.8` when setting up the virtual envionment.
+- Other Dependencies: `git`
 
 ### Setup Instructions
 
@@ -150,6 +151,7 @@ JS Visualization Libraries
     ```bash
     cd src/project/
     ./manage.py migrate
+    ./manage.py compress
     ```
 
     Also, if you're running in a production environment where Django's built in static file server doesn't work, run the following command:
