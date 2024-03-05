@@ -2,12 +2,12 @@
 
 ## Description
 
-Dynamic Causal Modeling is a Bayesian statistical technique for reverse 
-engineering time series data. One of the ongoing challenges in applying 
-such statistical models is how to visualise the multiverse of possible 
-outcomes that the algorithm derives. Your goal is to create an 
-evidence-based visualisation of possible climate futures that allows users 
-to interrogate and compare projections from a complete simplified 
+Dynamic Causal Modeling is a Bayesian statistical technique for reverse
+engineering time series data. One of the ongoing challenges in applying
+such statistical models is how to visualise the multiverse of possible
+outcomes that the algorithm derives. Your goal is to create an
+evidence-based visualisation of possible climate futures that allows users
+to interrogate and compare projections from a complete simplified
 carbon-climate model within the Dynamic Causal Modeling framework.
 
 ## Climate Visualisations
@@ -92,10 +92,6 @@ JS Visualization Libraries
 - ShaderGraph
     - library for linking together GLSL snippets into stand-alone shaders
 
-## Dependencies
-
-- The SRCF only runs `python3.8`, so if possible make your venv use that version of Python as well.
-
 ## Current API
 - Climate:
     - `GET /api/climate?scenario=XXX[&file=YYY]`<br>
@@ -108,3 +104,69 @@ JS Visualization Libraries
     - static `GET /api/3body/<x>/deriv_generative.json`. x is one of `["0.00", "0.01", ..., "0.07"]` without quotes. (Trailing and leading zeroes are significant as they are statically served.)
     We can do it dynamically but this would be significantly faster in production.
 
+## Setup
+
+### Dependencies
+
+- The project is designed to run on Python 3.8. This can usually be installed from your system's package manager (or from the web on Windows).
+    - If Python3.8 is not set as your default Python version, ensure you use `python3.8` when setting up the virtual envionment.
+
+### Setup Instructions
+
+1. Clone the repository, and cd into the newly created directory.
+
+    ```bash
+    git clone https://github.com/elizabethhsy/Climate-Foresight.git
+    cd Climate-Foresight
+    ```
+
+    ==TODO== setup submodules
+
+2. Setup Python virtual enviornment and install dependencies.
+
+    ```bash
+    python3.8 -m venv env
+    source env/bin/activate
+    pip install -r requirements.txt
+    ```
+
+3. Setup node.js and npm, and install node dependencies.
+
+    Ensure node and npm are installed (similarly to python, most likely from your system's package manager, or the web on Windows). This project is designed to work with node 21.6.1 - if your system uses a different version, you can either use `nvm` to setup an environment which uses 21.6.1, or simply run `npm install node@21.6.1` to install the newer version via npm.
+    Finally, run the following from the project's base directory:
+
+    ```bash
+    npm install
+    ```
+
+4. Setup custom TS compiler
+
+    ```bash
+    ln bin/tsc-custom env/bin/tsc-custom
+    ```
+
+5. Ensure Django setup is complete
+
+    ```bash
+    cd src/project/
+    ./manage.py migrate
+    ```
+
+    Also, if you're running in a production environment where Django's built in static file server doesn't work, run the following command:
+    ```bash
+    ./manage.py collectstatic
+    ```
+    This pulls all static files into `BASE_DIR/static`. All static files in this folder are specified as static files to be served manually, so will be served with no more effort.
+
+6. Run the server!
+
+    ```bash
+    ./manage.py runserver
+    ```
+
+    This will run the server on the default port of 8000.
+    To run on a different port, use:
+
+    ```bash
+    ./manage.py runserver 0.0.0.0:<port>
+    ```
