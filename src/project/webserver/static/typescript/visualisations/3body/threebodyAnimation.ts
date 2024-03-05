@@ -120,7 +120,7 @@ function setupConfig(div: string): Config {
   const configParent = document.getElementById(div);
   const config = new Config(99);
 
-  config.add_heading("View Runs with Difffernt Noise Level");
+  config.add_heading("View Runs with Different Noise Levels");
   for (let i = 0; i < 8; i++) {
     config.add_value("checkbox" + `${i}`, "Noise Level " + `${i}`, "checkbox", null, (i === 0));
   }
