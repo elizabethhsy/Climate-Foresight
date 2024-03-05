@@ -156,6 +156,15 @@ JS Visualization Libraries
     cd ../../../
     ```
 
+    If you are generating the data yourself, you will have to use the `dcEmb-examples` and the `dcEmb` submodules. See `dcEmb-examples/build_instructions.md` for more information. You will need to put the relevant data files in `src/project/webapi/static/large_data`.
+
+    The current API reads from and serve the following files verbatim.
+    - `src/project/webapi/static/large_data/climate_no_co2/<scenario>/pos_generative.json`
+    - `src/project/webapi/static/large_data/climate2/<scenario>/year/<species_metric>.json`.
+    - `src/project/webapi/static/large_data/climate2/<scenario>/species/<species>.json`.
+    - `src/project/webapi/static/large_data/climate2/temps/temps.json`
+    - `src/project/webapi/static/large_data/3body/<x>/deriv_generative.json`.
+
 6. Ensure Django setup is complete
 
     ```bash
