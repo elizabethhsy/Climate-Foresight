@@ -35,7 +35,7 @@ const NUM_RUNS_TO_USE = 50;
 
 const tooltipWidth = 100;
 const tooltipHeight = 75;
-var scalingFactor = 10;
+var scalingFactor = 20;
 
 const margin = {
     top: tooltipHeight/2,
