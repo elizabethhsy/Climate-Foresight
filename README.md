@@ -121,8 +121,6 @@ JS Visualization Libraries
     cd Climate-Foresight
     ```
 
-    ==TODO== setup submodules
-
 2. Setup Python virtual enviornment and install dependencies.
 
     ```bash
@@ -146,10 +144,19 @@ JS Visualization Libraries
     ln bin/tsc-custom env/bin/tsc-custom
     ```
 
-5. Ensure Django setup is complete
+5. Get the data from [here](https://yl917.user.srcf.net/climateforesight_data.zip).
 
     ```bash
-    cd src/project/
+    mkdir -p src/project/webapi/static/large_data
+    cd src/project/webapi/static/large_data
+    wget https://yl917.user.srcf.net/climateforesight_data.zip
+    unzip climateforesight_data.zip
+    cd ../../../
+    ```
+
+6. Ensure Django setup is complete
+
+    ```bash
     ./manage.py migrate
     ./manage.py compress
     ```
@@ -160,7 +167,7 @@ JS Visualization Libraries
     ```
     This pulls all static files into `BASE_DIR/static`. All static files in this folder are specified as static files to be served manually, so will be served with no more effort.
 
-6. Run the server!
+7. Run the server!
 
     ```bash
     ./manage.py runserver
@@ -172,3 +179,4 @@ JS Visualization Libraries
     ```bash
     ./manage.py runserver 0.0.0.0:<port>
     ```
+
