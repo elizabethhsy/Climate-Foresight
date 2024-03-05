@@ -388,7 +388,8 @@ class BarChart extends Figure {
         const xValues = Array.from({ length: 1000 }, (_, i) => xMin + (xMax - xMin) * i / 999);
 
         // Choose a reasonable bandwidth (this may require experimentation)
-        const bandwidth = 1.06 * Math.sqrt(calculateVariance(data)) * Math.pow(data.length, -1/5); // Silverman's rule of thumb
+        const bandwidth = 1.06 * Math.sqrt(calculateVariance(data)) * Math.pow(data.length, -1/5) * 0.4; // Silverman's rule of thumb
+        console.log(bandwidth);
 
         const density = xValues.map(x => {
           const kernelSum = data.reduce((sum, xi) => {
